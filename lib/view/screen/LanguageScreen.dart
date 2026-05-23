@@ -5,26 +5,19 @@ import '../../controller/locale_controller.dart';
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});
 
+  static const Color primaryColor = Color(0xFFFF5722);
+  static const Color textColor = Color(0xFF1E293B);
+  static const Color iconColor = Color(0xFF64748B);
+  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
+
   @override
   Widget build(BuildContext context) {
     LocaleController controller = Get.put(LocaleController());
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF000000),
-                  Color(0xFF1A1A1A),
-                  Color(0xFF000000),
-                ],
-              ),
-            ),
-          ),
           Positioned(
             top: -100,
             right: -100,
@@ -33,11 +26,10 @@ class LanguageScreen extends StatelessWidget {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.orange.withOpacity(0.05),
+                color: primaryColor.withOpacity(0.04),
               ),
             ),
           ),
-
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -48,56 +40,48 @@ class LanguageScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.orange.withOpacity(0.5),
-                        width: 1,
-                      ),
+                      color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.orange.withOpacity(0.1),
-                          blurRadius: 40,
-                          spreadRadius: 10,
+                          color: primaryColor.withOpacity(0.1),
+                          blurRadius: 30,
+                          spreadRadius: 2,
                         ),
                       ],
                     ),
                     child: const Icon(
                       Icons.language_rounded,
                       size: 70,
-                      color: Colors.orange,
+                      color: primaryColor,
                     ),
                   ),
-
                   const SizedBox(height: 40),
-
                   const Text(
                     "Select Language",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: textColor,
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 1.5,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  Text(
+                  const SizedBox(height: 4),
+                  const Text(
                     "اختر اللغة المناسبة للتطبيق",
-                    style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                    style: TextStyle(color: iconColor, fontSize: 16, fontWeight: FontWeight.w500),
                   ),
-
-                  const SizedBox(height: 60),
-
+                  const SizedBox(height: 50),
                   _buildModernButton(
                     title: "العربية",
-                    subtitle: "Arabic Language",
-                    icon: "🇯🇴",
+                    subtitle: "اللغة العربية",
+                    flag: "🇪🇬",
                     onPressed: () => controller.changeLang("ar"),
                   ),
-
                   const SizedBox(height: 20),
-
                   _buildModernButton(
                     title: "English",
                     subtitle: "English Language",
-                    icon: "🇺🇸",
+                    flag: "🇺🇸",
                     onPressed: () => controller.changeLang("en"),
                   ),
                 ],
@@ -112,25 +96,22 @@ class LanguageScreen extends StatelessWidget {
   Widget _buildModernButton({
     required String title,
     required String subtitle,
-    required String icon,
+    required String flag,
     required VoidCallback onPressed,
   }) {
     return InkWell(
       onTap: onPressed,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
-          color: const Color(0xFF252525), 
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.05),
-          ), 
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withOpacity(0.02),
               blurRadius: 10,
-              offset: const Offset(0, 5),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -141,10 +122,10 @@ class LanguageScreen extends StatelessWidget {
               width: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.black26,
-                borderRadius: BorderRadius.circular(15),
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(icon, style: const TextStyle(fontSize: 24)),
+              child: Text(flag, style: const TextStyle(fontSize: 24)),
             ),
             const SizedBox(width: 20),
             Column(
@@ -153,22 +134,22 @@ class LanguageScreen extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: textColor,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   subtitle,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                  style: const TextStyle(color: iconColor, fontSize: 13),
                 ),
               ],
             ),
             const Spacer(),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios_rounded,
-              color: Colors.orange.shade300,
-              size: 18,
+              color: primaryColor,
+              size: 16,
             ),
           ],
         ),

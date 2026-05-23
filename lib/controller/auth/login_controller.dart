@@ -37,6 +37,7 @@ class LoginController extends GetxController {
         email:  response['user']['email'] ?? '',
         name: response['user']['name'] ?? '',
         userId: response['user']['id'] ?? '',
+        online: response['user']['online'] ?? '',
       );
       Get.offNamed(AppRoutes.home);
     } else {

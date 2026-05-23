@@ -4,7 +4,8 @@ class AppLink {
   static const String login  = "$server/delivery/login";
   static const String statistics  = "$server/delivery/";
   static const String infoDelivery  = "$server/delivery/profile";
-
+  static const String getOrders ="$server/delivery";
+  static const String deliveryStatus ="$server/delivery";
 
 
 
@@ -22,7 +23,6 @@ class AppLink {
   static const String createOrder ="$server/orders/new";
   static const String createCustomOrder ="$server/custom/order";
   static const String orderSilver ="$server/orders/silver";
-  static const String getOrders ="$server/orders/mobile";
   static const String getProducts ="$server/products/mobile";
   static const String getHome ="$server/home";
   static const String serach ="$server/products/search";

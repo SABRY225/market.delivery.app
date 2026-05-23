@@ -1,19 +1,33 @@
 import 'dart:async';
+import 'package:delivery/controller/order/order_controller.dart';
+import 'package:delivery/core/services/local_storage.dart';
+import 'package:delivery/data/model/order_model.dart';
 import 'package:get/get.dart';
 import '../core/class/status_request.dart';
 import '../core/functions/handling_data_controller.dart';
 import '../data/datasource/remote/home_data.dart';
 import '../core/class/crud.dart';
-import '../data/datasource/mock/MockOrderModel.dart';
+import '../core/services/notification_service.dart';
 
 class HomeController extends GetxController {
   HomeData homeData = HomeData(Crud());
+  OrderController orderController = Get.put(OrderController());
   StatusRequest statusRequest = StatusRequest.none;
-  bool isAvailable = false;
-  List ordersList = [];
+  bool isAvailable = LocalStorage.getOnline() ?? false;
+  var ordersList = [];
+  Timer? _timer;
 
-  toggleStatus(val) {
-    isAvailable = val;
+  int orderReadyCont = 0;
+
+  toggleStatus(val) async {
+    var response = await homeData.postStatus(val);
+    statusRequest = handlingData(response);
+
+    if (StatusRequest.success == statusRequest) {
+      isAvailable = val;
+    } else {
+      Get.snackbar("Error".tr, "Failed updated status".tr);
+    }
     update();
   }
 
@@ -25,43 +39,84 @@ class HomeController extends GetxController {
 
     var response = await homeData.getData();
     statusRequest = handlingData(response);
-    
+
     if (StatusRequest.success == statusRequest) {
-      if (response['data'] != null && response['data'].isNotEmpty) {
-        ordersList = response['data'];
+      if (response['data'] != null) {
+        List rawList = response['data'];
+        print("rawList: $rawList");
+
+        var newList = rawList;
+
+        if (newList.length > ordersList.length) {
+          NotificationService.showNotification(
+            title: "طلب جديد! 🚨",
+            body: "لديك طلب جديد في إنتظار القبول.",
+          );
+        }
+
+        ordersList = newList;
+        orderReadyCont = ordersList.length;
       } else {
-        loadTemporaryData();
+        Get.snackbar("Error".tr, "Failed to retrieve updated data".tr);
       }
     } else {
-      loadTemporaryData();
+      Get.snackbar("Error".tr, "Failed to retrieve updated data".tr);
     }
     update();
   }
 
-  acceptOrder(id) {
-    ordersList.removeWhere((order) => order.id == id);
-    update();
+  acceptOrder(id) async {
+    var response = await homeData.postAccept(id);
+    statusRequest = handlingData(response);
+
+    if (StatusRequest.success == statusRequest) {
+      if (response['data'] != null) {
+        getData();
+        orderController.getData();
+        update();
+      } else {
+        Get.snackbar("Error".tr, "Failed to accepted order".tr);
+      }
+    } else {
+      Get.snackbar("Error".tr, "Failed to accepted order".tr);
+    }
   }
 
-  rejectOrder(id) {
-    ordersList.removeWhere((order) => order.id == id);
-    update();
+  rejectOrder(id) async {
+    var response = await homeData.postReject(id);
+    statusRequest = handlingData(response);
+
+    if (StatusRequest.success == statusRequest) {
+      if (response['data'] != null) {
+        getData();
+        orderController.getData();
+        update();
+      } else {
+        Get.snackbar("Error".tr, "Failed to accepted order".tr);
+      }
+    } else {
+      Get.snackbar("Error".tr, "Failed to accepted order".tr);
+    }
   }
 
   @override
   void onInit() {
     getData();
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      getData(showLoading: false);
+    });
     super.onInit();
   }
 
   void loadTemporaryData() {
     statusRequest = StatusRequest.success;
-    ordersList = MockOrderModel.sampleOrders;
+    ordersList = [];
     update();
   }
 
   @override
   void onClose() {
+    _timer?.cancel();
     super.onClose();
   }
 }

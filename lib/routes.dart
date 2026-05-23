@@ -1,5 +1,7 @@
+import 'package:delivery/view/screen/ContactScreen.dart';
 import 'package:delivery/view/screen/InfoDeliveryScreen.dart';
 import 'package:delivery/view/screen/StatisticsScreen.dart';
+import 'package:delivery/view/screen/order_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'view/screen/LanguageScreen.dart';
 import 'view/screen/categoryProducts_screen.dart';
@@ -37,7 +39,9 @@ class AppRoutes {
   static const String customOrder = "/custom-order";
   static const String infoDelivery = "/info_delivery";
   static const String statistics = "/statistics";
-
+  static const String contact = "/contact";
+  static const String detailesOrder = "/details-order";
+  
   static Map<String, Widget Function(BuildContext)> routes = {
     login: (context) => const LoginScreen(),
     productDetails: (context) => const ProductDetails(),
@@ -55,6 +59,8 @@ class AppRoutes {
     categoryProducts: (context) => const CategoryProductsPage(),
     selectLanguage: (context) => const SettingsLanguageScreen(),
     customOrder: (context) => const CustomOrderScreen(),
-    infoDelivery: (context) => const InfoDeliveryScreen()
+    infoDelivery: (context) => const InfoDeliveryScreen(),
+    contact: (context) => const ContactScreen(),
+    detailesOrder: (context) => const OrderDetailsScreen(),
   };
 }

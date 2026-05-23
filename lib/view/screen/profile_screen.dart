@@ -88,6 +88,11 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () => Get.toNamed(AppRoutes.statistics),
                     ),
                     _buildListTile(
+                      icon: Icons.contact_mail, 
+                      title: "contact".tr,
+                      onTap: () => Get.toNamed(AppRoutes.contact),
+                    ),
+                    _buildListTile(
                       icon: Icons.language, 
                       title: "app_language".tr,
                       onTap: () => Get.toNamed(AppRoutes.selectLanguage),

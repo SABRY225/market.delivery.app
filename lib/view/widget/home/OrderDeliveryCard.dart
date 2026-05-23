@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
+import '../../../data/model/order_model.dart'; 
 
 class OrderDeliveryCard extends StatelessWidget {
-  final String orderId;
-  final String totalPrice;
-  final String orderTime;
-  final String pickupLocation;
-  final String deliveryLocation;
+  final OrderModel order;
   final VoidCallback onDetailsPressed;
   final VoidCallback onAcceptPressed;
   final VoidCallback onRejectPressed;
 
   const OrderDeliveryCard({
     super.key,
-    required this.orderId,
-    required this.totalPrice,
-    required this.orderTime,
-    required this.pickupLocation,
-    required this.deliveryLocation,
+    required this.order,
     required this.onDetailsPressed,
     required this.onAcceptPressed,
-    required this.onRejectPressed
+    required this.onRejectPressed,
   });
 
   static const Color primaryColor = Color(0xFFFF5722);
@@ -28,6 +21,11 @@ class OrderDeliveryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Safely pull item name out of list if it exists
+    final String firstItemName = order.items != null && order.items!.isNotEmpty
+        ? order.items!.first.name ?? ""
+        : "طلب طعام";
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       padding: const EdgeInsets.all(16),
@@ -53,7 +51,7 @@ class OrderDeliveryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "طلب رقم #$orderId",
+                    "طلب رقم #${order.id ?? ''}",
                     style: const TextStyle(
                       color: textColor,
                       fontSize: 16,
@@ -62,7 +60,7 @@ class OrderDeliveryCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    orderTime,
+                    order.date ?? "",
                     style: const TextStyle(color: subTextColor, fontSize: 12),
                   ),
                 ],
@@ -106,14 +104,14 @@ class OrderDeliveryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      pickupLocation,
+                      firstItemName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 18),
                     Text(
-                      deliveryLocation,
+                      order.customer ?? "",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: subTextColor, fontSize: 14),
@@ -126,7 +124,7 @@ class OrderDeliveryCard extends StatelessWidget {
                 children: [
                   const Text("الحساب", style: TextStyle(color: subTextColor, fontSize: 11)),
                   Text(
-                    "$totalPrice ج.م",
+                    "${order.total ?? 0} ج.م",
                     style: const TextStyle(color: primaryColor, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],

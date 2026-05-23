@@ -41,12 +41,12 @@ class OtpController extends GetxController {
     statusRequest = handlingData(response);
 
     if (StatusRequest.success == statusRequest) {
-      await LocalStorage.setUser(
-        token: response['token'] ?? '',
-        email: email,
-        name: response['user']['name'] ?? '',
-        userId: response['user']['id'] ?? '',
-      );
+      // await LocalStorage.setUser(
+      //   token: response['token'] ?? '',
+      //   email: email,
+      //   name: response['user']['name'] ?? '',
+      //   userId: response['user']['id'] ?? '',
+      // );
 
       Get.offAllNamed(AppRoutes.home);
     } else {

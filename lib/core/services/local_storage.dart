@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
@@ -12,11 +14,13 @@ class LocalStorage {
     required String email,
     required int userId,
     required String name,
+    required bool online,
   }) {
     prefs.setString('token', token);
     prefs.setString('email', email);
     prefs.setString('name', name);
     prefs.setInt('userId', userId);
+    prefs.setBool('online', online);
   }
 
   static setPointAndOrders({
@@ -33,6 +37,7 @@ class LocalStorage {
   static String? getPoints() => prefs.getString('points');
   static String? getOrderCounter() => prefs.getString('orderCounter');
   static int? getUserId() => prefs.getInt('userId');
+  static bool? getOnline() => prefs.getBool('online');
 
   static clear() {
     prefs.clear();

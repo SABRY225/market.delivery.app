@@ -1,4 +1,5 @@
 import 'controller/locale_controller.dart';
+import 'core/services/notification_service.dart';
 import 'core/localization/translation.dart';
 import 'core/services/local_storage.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ void main() async {
 
   String startRoute = await localeController.checkInitialRoute();
 
+  await NotificationService.init();
+  
   runApp(AtelierApp(initialRoute: startRoute));
 }
 

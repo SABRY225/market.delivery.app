@@ -39,7 +39,7 @@ class SettingsLanguageScreen extends StatelessWidget {
             _buildLanguageCard(
               title: "العربية",
               subtitle: "Arabic",
-              flag: "🇯🇴",
+              flag: "🇪🇬",
               isSelected: Get.locale?.languageCode == 'ar',
               onTap: () => controller.changeLang("ar"),
             ),

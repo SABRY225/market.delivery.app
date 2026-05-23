@@ -23,6 +23,32 @@ class Crud {
     }
   }
 
+  Future<Either<StatusRequest, Map>> putData(
+    String linkurl,
+    bool online,
+  ) async {
+    try {
+      print("linkurl: ${linkurl}");
+      print("data: ${online}");
+
+      // إرسال الطلب
+      var response = await http.put(
+        Uri.parse(linkurl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"online": online}),
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map responsebody = jsonDecode(response.body);
+        return Right(responsebody);
+      } else {
+        return const Left(StatusRequest.serverfailure);
+      }
+    } catch (e) {
+      return const Left(StatusRequest.offlinefailure);
+    }
+  }
+
   Future<Either<StatusRequest, Map>> getData(String linkurl) async {
     try {
       var response = await http.get(

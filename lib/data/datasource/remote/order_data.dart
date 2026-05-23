@@ -8,7 +8,7 @@ class OrderData {
   var userId = LocalStorage.getUserId();
   getData() async {
     var response = await crud.getData(
-      "${AppLink.getOrders}/${userId}",
+      "${AppLink.getOrders}/$userId/myorders",
     );
     return response.fold((l) => l, (r) => r);
   }

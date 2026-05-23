@@ -66,43 +66,44 @@ class OrdersScreen extends StatelessWidget {
   Widget _buildOrderCard(Map? order) {
     if (order == null) return const SizedBox();
 
-    String type = order['type'] ?? "عام";
+    String orderId = order['id']?.toString() ?? "";
+    String customerName = order['customer'] ?? "عميل غير معروف";
     String total = order['total']?.toString() ?? "0";
     String status = order['status'] ?? "غير محدد";
-    String createdAt = order['createdAt']?.toString().split('T')[0] ?? "";
+    String startTime = order['startTime'] ?? "";
+    String paymentMethod = order['payment'] ?? "كاش";
     Color bgColor = const Color(0xFF94A3B8);
 
-    if (order['status'] == 'جدide' || order['status'] == 'جديد') {
+    if (order['status'] == 'pending') {
       status = "new";
+      bgColor = const Color.fromARGB(137, 16, 185, 69);
+    } else if (order['status'] == 'confirmed') {
+      status = "in_confirmed";
       bgColor = const Color(0xFF10B981);
-    } else if (order['status'] == 'قيد التنفيذ') {
+    }else if (order['status'] == 'processing') {
       status = "in_processing";
       bgColor = const Color(0xFFF59E0B);
-    } else if (order['status'] == 'جاري الشحن') {
+    } else if (order['status'] == 'searching') {
+      status = "in_searching";
+      bgColor = const Color(0xFFF59E0B);
+    }else if (order['status'] == 'shipped') {
       status = "in_Shopping";
       bgColor = const Color(0xFF3B82F6);
-    } else if (order['status'] == 'مكتمل') {
+    } else if (order['status'] == 'delivered') {
       status = "completed";
       bgColor = const Color(0xFF64748B);
-    } else if (order['status'] == 'ملغي') {
+    } else if (order['status'] == 'cancelled') {
       status = "cancelled";
       bgColor = const Color(0xFFEF4444);
-    } else if (order['status'] == 'مرتجع') {
-      status = "returned";
-      bgColor = const Color(0xFF78350F);
     }
 
-    String city = "غير محدد";
-    if (order['city'] != null && order['city'] is Map) {
-      city = order['city']['name'] ?? "مدينة غير معروفة";
-    }
-
-    String itemName = "طلب فارغ";
+    String firstItemName = "Order without products".tr;
     if (order['items'] != null && (order['items'] as List).isNotEmpty) {
-      itemName = order['items'][0]['name'] ?? "منتج بدون اسم";
+      firstItemName = order['items'][0]['name'] ?? "Product without a name".tr;
+      if ((order['items'] as List).length > 1) {
+        firstItemName += " (+${(order['items'] as List).length - 1})";
+      }
     }
-
-    bool isSilver = order['type'] == "silver";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
@@ -117,12 +118,6 @@ class OrdersScreen extends StatelessWidget {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(
-          color: isSilver
-              ? Colors.blueGrey.withOpacity(0.2)
-              : Colors.transparent,
-          width: 1,
-        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,30 +125,18 @@ class OrdersScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  color: isSilver
-                      ? Colors.blueGrey.withOpacity(0.1)
-                      : primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  (type.tr).toUpperCase(),
-                  style: TextStyle(
-                    color: isSilver ? Colors.blueGrey[700] : primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+              Text(
+                "order number:".tr+ " #$orderId",
+                style: const TextStyle(
+                  color: textColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
               Text(
                 '$total ${"egp".tr}',
                 style: const TextStyle(
-                  color: textColor,
+                  color: primaryColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -165,28 +148,37 @@ class OrdersScreen extends StatelessWidget {
             child: Divider(color: Color(0xFFE2E8F0), thickness: 1),
           ),
           _buildInfoRow(
-            Icons.shopping_bag_outlined,
-            itemName,
+            Icons.person_outline,
+            "${"The client:".tr} $customerName",
             textColor,
             isBold: true,
           ),
           const SizedBox(height: 8),
           _buildInfoRow(
-            Icons.calendar_today_outlined,
-            "${"Order Date:".tr} $createdAt",
-            iconColor,
+            Icons.shopping_bag_outlined,
+            firstItemName,
+            textColor,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: _buildInfoRow(
-                  Icons.location_on_outlined,
-                  city,
-                  iconColor,
-                ),
+              _buildInfoRow(
+                Icons.access_time,
+                startTime,
+                iconColor,
               ),
+              _buildInfoRow(
+                Icons.payment_outlined,
+                paymentMethod.toUpperCase(),
+                iconColor,
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -223,17 +215,15 @@ class OrdersScreen extends StatelessWidget {
       children: [
         Icon(icon, color: isBold ? primaryColor : iconColor, size: 18),
         const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: displayColor,
-              fontSize: 14,
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
-            ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+        Text(
+          text,
+          style: TextStyle(
+            color: displayColor,
+            fontSize: 14,
+            fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
           ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
       ],
     );
@@ -248,11 +238,7 @@ class OrdersScreen extends StatelessWidget {
           const SizedBox(height: 15),
           Text(
             message,
-            style: const TextStyle(
-              color: textColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ],
       ),
