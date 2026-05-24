@@ -13,7 +13,8 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(OrderController());
+    // نتحقق مما إذا كان الكنترولر مسجلاً بالفعل، وإذا لم يكن، نقوم بإنشائه
+    final OrderController controller = Get.put(OrderController());
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -54,7 +55,7 @@ class OrdersScreen extends StatelessWidget {
               itemCount: controller.orders.length,
               itemBuilder: (context, index) {
                 if (controller.orders[index] == null) return const SizedBox();
-                return _buildOrderCard(controller.orders[index]);
+                return _buildOrderCard(controller.orders[index], controller);
               },
             );
           }
@@ -63,7 +64,7 @@ class OrdersScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderCard(Map? order) {
+  Widget _buildOrderCard(Map? order, OrderController controller) {
     if (order == null) return const SizedBox();
 
     String orderId = order['id']?.toString() ?? "";
@@ -74,19 +75,20 @@ class OrdersScreen extends StatelessWidget {
     String paymentMethod = order['payment'] ?? "كاش";
     Color bgColor = const Color(0xFF94A3B8);
 
+    // تحديد الحالات والألوان
     if (order['status'] == 'pending') {
       status = "new";
       bgColor = const Color.fromARGB(137, 16, 185, 69);
     } else if (order['status'] == 'confirmed') {
       status = "in_confirmed";
       bgColor = const Color(0xFF10B981);
-    }else if (order['status'] == 'processing') {
+    } else if (order['status'] == 'processing') {
       status = "in_processing";
       bgColor = const Color(0xFFF59E0B);
     } else if (order['status'] == 'searching') {
       status = "in_searching";
       bgColor = const Color(0xFFF59E0B);
-    }else if (order['status'] == 'shipped') {
+    } else if (order['status'] == 'shipped') {
       status = "in_Shopping";
       bgColor = const Color(0xFF3B82F6);
     } else if (order['status'] == 'delivered') {
@@ -105,101 +107,117 @@ class OrdersScreen extends StatelessWidget {
       }
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "order number:".tr+ " #$orderId",
-                style: const TextStyle(
-                  color: textColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                '$total ${"egp".tr}',
-                style: const TextStyle(
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: Divider(color: Color(0xFFE2E8F0), thickness: 1),
-          ),
-          _buildInfoRow(
-            Icons.person_outline,
-            "${"The client:".tr} $customerName",
-            textColor,
-            isBold: true,
-          ),
-          const SizedBox(height: 8),
-          _buildInfoRow(
-            Icons.shopping_bag_outlined,
-            firstItemName,
-            textColor,
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildInfoRow(
-                Icons.access_time,
-                startTime,
-                iconColor,
-              ),
-              _buildInfoRow(
-                Icons.payment_outlined,
-                paymentMethod.toUpperCase(),
-                iconColor,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  status.tr,
+    // تغليف الكارت بـ InkWell لجعل الكارت بأكمله قابلاً للضغط
+    return InkWell(
+      onTap: () {
+        if (order['status'] != 'cancelled' && order['status'] != 'delivered' ) {
+          controller.goToOrderDetails(order); 
+        } else {
+          Get.snackbar(
+            "تنبيه".tr, 
+            "لا يمكن تعديل أو فتح الطلبات المكتملة".tr,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor:Color(0xFFFF5722)
+          );
+        }
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "order number:".tr + " #$orderId",
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: textColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                Text(
+                  '$total ${"egp".tr}',
+                  style: const TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Divider(color: Color(0xFFE2E8F0), thickness: 1),
+            ),
+            _buildInfoRow(
+              Icons.person_outline,
+              "${"The client:".tr} $customerName",
+              textColor,
+              isBold: true,
+            ),
+            const SizedBox(height: 8),
+            _buildInfoRow(
+              Icons.shopping_bag_outlined,
+              firstItemName,
+              textColor,
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildInfoRow(
+                  Icons.access_time,
+                  startTime,
+                  iconColor,
+                ),
+                _buildInfoRow(
+                  Icons.payment_outlined,
+                  paymentMethod.toUpperCase(),
+                  iconColor,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    status.tr,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

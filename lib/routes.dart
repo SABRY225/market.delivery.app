@@ -17,7 +17,6 @@ import 'view/screen/auth/login_screen.dart';
 import 'view/screen/orders_screen.dart';
 import 'view/screen/auth/otp_screen.dart';
 import 'view/screen/auth/signup_screen.dart';
-import 'view/screen/product_details_screen.dart';
 
 
 class AppRoutes {
@@ -44,7 +43,6 @@ class AppRoutes {
   
   static Map<String, Widget Function(BuildContext)> routes = {
     login: (context) => const LoginScreen(),
-    productDetails: (context) => const ProductDetails(),
     home: (context) => const HomeScreen(),
     orders: (context) => const OrdersScreen(),
     cart: (context) =>  CartScreen(),

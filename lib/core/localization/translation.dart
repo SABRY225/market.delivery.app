@@ -156,7 +156,16 @@ class MyTranslations extends Translations {
           "You will now receive delivery requests",
       "turn_on_to_receive_orders": "Turn on to receive orders",
       "available_for_work": "Available for Work",
-      "contact":"Technical Support"
+      "contact":"Technical Support",
+      "order_status":"Order status",
+      "no_status":"No Status",
+      "total_amount":"Total Amount",
+      "receipt_summary":"Receipt Summary",
+      "order_items":"Order Items",
+      "payment":"Payment Method",
+      "time":"Time",
+      "customer_info":"Customer Info",
+      "COD":"Cash On Delivery"
     },
     "ar": {
       "no_internet_connection": "لا يوجد اتصال بالإنترنت",
@@ -300,11 +309,13 @@ class MyTranslations extends Translations {
       "Start typing to search": "ابدأ الكتابة للبحث",
       "No products found": "لم يتم العثور على منتجات",
 
+
       "ready_orders": "الطلبات الجاهزة",
       "statistics": "الاحصائيات",
       "current_orders": "الطلبات الجارية",
       "info_delivery": "بيانات السائق",
       "driver_status": "حالة السائق",
+      "order_status":"حالة الطلب",
       "available_for_work": "متاح للعمل",
       "currently_unavailable": "غير متاح حالياً",
       "you_will_receive_delivery_requests_now": "ستستقبل طلبات التوصيل الآن",
@@ -341,7 +352,15 @@ class MyTranslations extends Translations {
       "Order without products":"طلب بدون منتجات",
       "No requests are currently available":"لا توجد طلبات متاحة حالياً",
       "Stay tuned! New orders will appear here directly.": "ابق مستعداً! ستظهر الطلبات الجديدة هنا مباشرة",
-      "contact":"الدعم الفني"
+      "contact":"الدعم الفني",
+      "no_status":"غير محدد",
+      "total_amount":"اجمالي المبلغ",
+      "receipt_summary":"ملخص الفاتورة",
+      "order_items":"تفاصيل الطلب",
+      "payment":"طريقة الدفع",
+      "time":"الوقت",
+      "customer_info":"بيانات العميل",
+      "COD":"الدفع عند الاستلام"
     },
   };
 }

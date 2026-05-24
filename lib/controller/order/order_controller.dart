@@ -1,3 +1,4 @@
+import 'package:delivery/routes.dart';
 import 'package:get/get.dart';
 import '../../core/class/status_request.dart';
 import '../../core/functions/handling_data_controller.dart';
@@ -43,6 +44,12 @@ class OrderController extends GetxController {
         orderCounts += 1;
       }
     }
+  }
+
+  void goToOrderDetails(order){
+     Get.toNamed(AppRoutes.detailesOrder, arguments: {
+      "orderData": order,
+    });
   }
 
   @override
