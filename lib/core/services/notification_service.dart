@@ -14,7 +14,6 @@ class NotificationService {
 
     await _notificationsPlugin.initialize(initializationSettings);
 
-    // 💡 الحل هنا: طلب إذن ظهور التنبيهات لهواتف أندرويد 13 فما فوق
     final androidPlugin = _notificationsPlugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
         
@@ -37,9 +36,8 @@ class NotificationService {
       android: androidPlatformChannelSpecifics,
     );
 
-    // تلميح سريع: استخدام DateTime الحالي كـ ID يمنع التنبيهات من استبدال بعضها البعض
     await _notificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000, // معرف فريد لكل تنبيه
+      DateTime.now().millisecondsSinceEpoch ~/ 1000, 
       title,
       body,
       platformChannelSpecifics,

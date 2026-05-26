@@ -360,7 +360,8 @@ class MyTranslations extends Translations {
       "payment":"طريقة الدفع",
       "time":"الوقت",
       "customer_info":"بيانات العميل",
-      "COD":"الدفع عند الاستلام"
+      "COD":"الدفع عند الاستلام",
+      "Orders ready for delivery":"الطلبات جاهزة للتسليم"
     },
   };
 }

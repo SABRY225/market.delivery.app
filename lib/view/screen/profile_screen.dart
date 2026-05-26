@@ -1,4 +1,3 @@
-import '../../../controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/services/local_storage.dart';
@@ -14,8 +13,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProfileController());
-    Future.microtask(() => controller.fetchProfileData());
     final name = LocalStorage.getName() ?? "user".tr;
 
     return Scaffold(
@@ -27,12 +24,6 @@ class ProfileScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios, color: textColor),
           onPressed: () => Get.offAllNamed(AppRoutes.home),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: textColor, size: 20),
-            onPressed: () => controller.fetchProfileData(),
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(

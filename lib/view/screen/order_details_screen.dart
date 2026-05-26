@@ -1,22 +1,137 @@
+import 'package:delivery/controller/order/order_details_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   const OrderDetailsScreen({super.key});
 
-  // Reusing your application design tokens
   static const Color primaryColor = Color(0xFFFF5722);
   static const Color textColor = Color(0xFF1E293B);
   static const Color iconColor = Color(0xFF64748B);
   static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
 
+  // دالة لجلب موقع الديليفري الحالي وحساب المسافة
+  Future<Map<String, dynamic>> _getDeliveryLocationAndDistance(
+    LatLng customerLoc,
+  ) async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return {'distance': 'خدمة الموقع معطلة', 'position': null};
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return {'distance': 'تم رفض إذن الموقع', 'position': null};
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return {'distance': 'الإذن مرفوض دائماً', 'position': null};
+    }
+
+    Position currentPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    double distanceInMeters = Geolocator.distanceBetween(
+      currentPosition.latitude,
+      currentPosition.longitude,
+      customerLoc.latitude,
+      customerLoc.longitude,
+    );
+
+    String formattedDistance;
+    if (distanceInMeters >= 1000) {
+      double distanceInKm = distanceInMeters / 1000;
+      formattedDistance = "${distanceInKm.toStringAsFixed(2)} كم";
+    } else {
+      formattedDistance = "${distanceInMeters.toStringAsFixed(0)} متر";
+    }
+
+    return {
+      'distance': formattedDistance,
+      'position': LatLng(currentPosition.latitude, currentPosition.longitude),
+    };
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      Get.snackbar("خطأ", "لا يمكن إجراء المكالمة الآن");
+    }
+  }
+
+  void _showCancelDialog(String orderId, OrderDetailsController controller) {
+    final TextEditingController reasonController = TextEditingController();
+
+    Get.defaultDialog(
+      title: "سبب إلغاء الطلب".tr,
+      titleStyle: const TextStyle(
+        color: textColor,
+        fontWeight: FontWeight.bold,
+      ),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: TextField(
+          controller: reasonController,
+          maxLines: 3,
+          decoration: InputDecoration(
+            hintText: "اكتب سبب الإلغاء هنا...".tr,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ),
+      textConfirm: "تأكيد الإلغاء".tr,
+      textCancel: "تراجع".tr,
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.red,
+      onConfirm: () async {
+        if (reasonController.text.trim().isEmpty) {
+          Get.snackbar("تنبيه", "يرجى كتابة سبب الإلغاء أولاً");
+        } else {
+          Get.back();
+          await controller.cancelOrder(
+            orderId,
+            reasonController.text.trim(),
+          );
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Safely extract arguments passed from OrderController
+    final OrderDetailsController controller = Get.put(OrderDetailsController());
+
     final Map orderData = Get.arguments?['orderData'] ?? {};
-    print("orderData---:$orderData");
     String orderId = orderData['id']?.toString() ?? "";
     String customerName = orderData['customer'] ?? "عميل غير معروف";
+    String customerPhone = orderData['phone']?.toString() ?? "";
+
+    double lat =
+        double.tryParse(orderData['location']?[1]?.toString() ?? "") ??
+        30.0596113;
+    double lng =
+        double.tryParse(orderData['location']?[0]?.toString() ?? "") ??
+        31.1884236;
+
+    final LatLng customerLocation = LatLng(lat, lng);
+
+    final CameraPosition initialCameraPosition = CameraPosition(
+      target: customerLocation,
+      zoom: 16.0,
+    );
+
     String total = orderData['total']?.toString() ?? "0";
     String status = orderData['status'] ?? "غير محدد";
     String startTime = orderData['startTime'] ?? "";
@@ -41,11 +156,9 @@ class OrderDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Order Status Summary Banner
             _buildStatusBanner(status),
             const SizedBox(height: 16),
 
-            // 2. Customer & Delivery Info Section
             _buildSectionCard(
               title: "customer_info".tr,
               icon: Icons.person_outline,
@@ -53,15 +166,179 @@ class OrderDetailsScreen extends StatelessWidget {
                 children: [
                   _buildDetailRow("The client:".tr, customerName),
                   const Divider(height: 20),
-                  _buildDetailRow("time".tr+":", startTime),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "رقم الهاتف:".tr,
+                            style: const TextStyle(
+                              color: iconColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            customerPhone.isEmpty ? "غير مسجل" : customerPhone,
+                            style: const TextStyle(
+                              color: textColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (customerPhone.isNotEmpty)
+                        IconButton(
+                          icon: const Icon(
+                            Icons.phone_forwarded,
+                            color: Colors.green,
+                            size: 28,
+                          ),
+                          onPressed: () => _makePhoneCall(customerPhone),
+                        ),
+                    ],
+                  ),
                   const Divider(height: 20),
-                  _buildDetailRow("payment".tr+":", paymentMethod.toUpperCase().tr),
+                  _buildDetailRow("time".tr + ":", startTime),
+                  const Divider(height: 20),
+                  _buildDetailRow(
+                    "payment".tr + ":",
+                    paymentMethod.toUpperCase().tr,
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
 
-            // 3. Products/Items Breakdown List
+            // كارت عرض الخريطة الأكبر مع رسم مسار تفاعلي وإمكانيات تحكم كاملة
+            FutureBuilder<Map<String, dynamic>>(
+              future: _getDeliveryLocationAndDistance(customerLocation),
+              builder: (context, snapshot) {
+                String distanceText = "جاري تحديد المسار والمسافة...";
+                LatLng? deliveryLocation;
+
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.hasData) {
+                  distanceText = snapshot.data!['distance'];
+                  deliveryLocation = snapshot.data!['position'];
+                }
+
+                Set<Marker> mapMarkers = {
+                  Marker(
+                    markerId: const MarkerId('customer_loc'),
+                    position: customerLocation,
+                    infoWindow: InfoWindow(
+                      title: customerName,
+                      snippet: 'موقع توصيل الطلب',
+                    ),
+                  ),
+                };
+
+                // إعداد قائمة الخطوط المتصلة (Polyline) لرسم المسار
+                Set<Polyline> mapPolylines = {};
+
+                if (deliveryLocation != null) {
+                  mapMarkers.add(
+                    Marker(
+                      markerId: const MarkerId('delivery_loc'),
+                      position: deliveryLocation,
+                      icon: BitmapDescriptor.defaultMarkerWithHue(
+                        BitmapDescriptor.hueBlue,
+                      ),
+                      infoWindow: const InfoWindow(
+                        title: 'موقعي الحالي',
+                        snippet: 'الدليفري',
+                      ),
+                    ),
+                  );
+
+                  // رسم خط مباشر واضح يربط بين الديليفري والعميل على الخريطة
+                  mapPolylines.add(
+                    Polyline(
+                      polylineId: const PolylineId('route_to_customer'),
+                      points: [deliveryLocation, customerLocation],
+                      color: primaryColor, // لون الخط برتقالي متناسق مع التطبيق
+                      width: 5, // سمك الخط ليكون واضحاً
+                      geodesic: true,
+                    ),
+                  );
+                }
+
+                return _buildSectionCard(
+                  title: "موقع التوصيل ومسار الحركة".tr,
+                  icon: Icons.map_outlined,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "المسافة الحالية للعميل:",
+                            style: TextStyle(
+                              color: textColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              distanceText,
+                              style: const TextStyle(
+                                color: primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          height:
+                              320, // تم تكبير الارتفاع من 200 إلى 320 لتصبح الخريطة ضخمة ومريحة للعين
+                          width: double.infinity,
+                          child: GoogleMap(
+                            initialCameraPosition: initialCameraPosition,
+                            mapType: MapType.normal,
+
+                            // تفعيل كافة مميزات التحكم الكامل بالخريطة
+                            myLocationButtonEnabled:
+                                true, // زر الانتقال للموقع الحالي
+                            zoomControlsEnabled:
+                                true, // أزرار التكبير والتصغير (+ / -)
+                            zoomGesturesEnabled:
+                                true, // السماح بالتكبير بإصبعين
+                            scrollGesturesEnabled:
+                                true, // السماح بسحب الخريطة والتحرك فيها
+                            tiltGesturesEnabled:
+                                true, // السماح بإمالة الخريطة بأبعاد ثلاثية
+                            rotateGesturesEnabled:
+                                true, // السماح بتدوير الخريطة
+
+                            markers: mapMarkers,
+                            polylines: mapPolylines, // تمرير خط المسار للخريطة
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+
             _buildSectionCard(
               title: "order_items".tr,
               icon: Icons.shopping_basket_outlined,
@@ -104,40 +381,34 @@ class OrderDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // 4. Receipt Total Calculation Summary
             _buildSectionCard(
               title: "receipt_summary".tr,
               icon: Icons.receipt_long_outlined,
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "total_amount".tr,
-                        style: const TextStyle(
-                          color: textColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        "$total ${"egp".tr}",
-                        style: const TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    "total_amount".tr,
+                    style: const TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "$total ${"egp".tr}",
+                    style: const TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 32),
 
-            // 5. Context-Aware Action Button
-            _buildActionButton(status, orderData),
+            _buildActionButtonsRow(status, orderId, controller),
           ],
         ),
       ),
@@ -211,7 +482,7 @@ class OrderDetailsScreen extends StatelessWidget {
     Color bannerColor = const Color(0xFF94A3B8);
     String statusText = "no_status";
 
-     if (status == 'pending') {
+    if (status == 'pending') {
       statusText = "new";
       bannerColor = const Color.fromARGB(137, 16, 185, 69);
     } else if (status == 'confirmed') {
@@ -271,43 +542,66 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(String status, Map order) {
-    String label = "reorder".tr;
-    IconData icon = Icons.refresh_rounded;
-
-    if (status == 'pending' || status == 'processing') {
-      label = "complete_order_process".tr;
-      icon = Icons.arrow_forward_rounded;
+  Widget _buildActionButtonsRow(
+    String status,
+    String orderId,
+    OrderDetailsController controller,
+  ) {
+    if (status == 'delivered' || status == 'cancelled') {
+      return const SizedBox.shrink();
     }
 
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton.icon(
-        onPressed: () {
-          if (status == 'cancelled') {
-            // Logic to add elements back into cart and redirect to checkout
-          } else {
-            // Logic to complete payment/checkout flow
-          }
-        },
-        icon: Icon(icon, color: Colors.white),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+    return Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: 48,
+            child: OutlinedButton.icon(
+              onPressed: () => _showCancelDialog(orderId, controller),
+              icon: const Icon(Icons.cancel_outlined, color: Colors.red),
+              label: Text(
+                "إلغاء الطلب".tr,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.red),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
           ),
         ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+        const SizedBox(width: 12),
+        Expanded(
+          child: SizedBox(
+            height: 48,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                await controller.deliverOrder(orderId);
+              },
+              icon: const Icon(Icons.check_circle_outline, color: Colors.white),
+              label: Text(
+                "تسليم الطلب".tr,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 2,
+              ),
+            ),
           ),
-          elevation: 2,
         ),
-      ),
+      ],
     );
   }
 }

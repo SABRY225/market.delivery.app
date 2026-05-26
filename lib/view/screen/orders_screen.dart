@@ -187,7 +187,7 @@ class OrdersScreen extends StatelessWidget {
                 ),
                 _buildInfoRow(
                   Icons.payment_outlined,
-                  paymentMethod.toUpperCase(),
+                  paymentMethod.toUpperCase().tr,
                   iconColor,
                 ),
               ],

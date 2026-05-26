@@ -24,7 +24,6 @@ class OrderController extends GetxController {
         orders.clear();
         orders.addAll(response['orders']);
         
-        // حساب العداد بشكل صحيح وآمن بعد نجاح جلب البيانات
         _calculateActiveOrders();
       } else {
         statusRequest = StatusRequest.failure;
@@ -36,11 +35,10 @@ class OrderController extends GetxController {
     update();
   }
 
-  // دالة خاصة لحساب الطلبات النشطة لمنع تكرار اللوجيك
   void _calculateActiveOrders() {
-    orderCounts = 0; // تصفير العداد أولاً لمنع التراكم العشوائي
+    orderCounts = 0;
     for (var order in orders) {
-      if (order["status"] != "delivered" && order["status"] != "rejected") {
+      if (order["status"] != "delivered" && order["status"] != "cancelled") {
         orderCounts += 1;
       }
     }
@@ -74,7 +72,6 @@ class OrderController extends GetxController {
       };
     }).toList();
     
-    // تحديث العداد حتى للبيانات التجريبية لكي يظهر في الـ Navigation Bar فوراً
     _calculateActiveOrders(); 
     update();
   }

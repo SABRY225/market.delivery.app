@@ -28,16 +28,11 @@ class Crud {
     bool online,
   ) async {
     try {
-      print("linkurl: ${linkurl}");
-      print("data: ${online}");
-
-      // إرسال الطلب
       var response = await http.put(
         Uri.parse(linkurl),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"online": online}),
       );
-      print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         Map responsebody = jsonDecode(response.body);
         return Right(responsebody);

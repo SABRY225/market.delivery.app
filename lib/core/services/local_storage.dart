@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
@@ -38,6 +37,16 @@ class LocalStorage {
   static String? getOrderCounter() => prefs.getString('orderCounter');
   static int? getUserId() => prefs.getInt('userId');
   static bool? getOnline() => prefs.getBool('online');
+
+
+  static void save(String key, List<String> value) {
+    prefs.setStringList(key, value);
+  }
+
+  static List<String> get(String key) {
+    return prefs.getStringList(key) ?? [];
+  }
+  
 
   static clear() {
     prefs.clear();
