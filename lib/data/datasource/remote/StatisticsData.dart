@@ -9,7 +9,7 @@ class StatisticsData {
   StatisticsData(this.crud);
  var userId = LocalStorage.getUserId();
   getStats() async {
-    var response = await crud.getData(AppLink.statistics+'$userId/myorders-history');
+    var response = await crud.getData("${AppLink.statistics}+$userId/myorders-history");
     return response.fold((l) => l, (r) => r);
   }
 }

@@ -13,7 +13,6 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // نتحقق مما إذا كان الكنترولر مسجلاً بالفعل، وإذا لم يكن، نقوم بإنشائه
     final OrderController controller = Get.put(OrderController());
 
     return Scaffold(
@@ -107,15 +106,14 @@ class OrdersScreen extends StatelessWidget {
       }
     }
 
-    // تغليف الكارت بـ InkWell لجعل الكارت بأكمله قابلاً للضغط
     return InkWell(
       onTap: () {
         if (order['status'] != 'cancelled' && order['status'] != 'delivered' ) {
           controller.goToOrderDetails(order); 
         } else {
           Get.snackbar(
-            "تنبيه".tr, 
-            "لا يمكن تعديل أو فتح الطلبات المكتملة".tr,
+            "alert".tr, 
+            "Completed orders cannot be modified or reopened.".tr,
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor:Color(0xFFFF5722)
           );

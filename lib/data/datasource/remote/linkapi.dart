@@ -7,6 +7,4 @@ class AppLink {
   static const String getOrders = "$server/delivery";
   static const String deliveryStatus = "$server/delivery";
   static const String changeOrderStatus = "$server/delivery";
-
-
 }

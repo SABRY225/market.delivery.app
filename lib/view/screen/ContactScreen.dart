@@ -18,7 +18,7 @@ class ContactScreen extends StatelessWidget {
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {
-      Get.snackbar("خطأ", "لا يمكن إجراء المكالمة حالياً");
+      Get.snackbar("Error".tr, "The call cannot be made at this time.".tr);
     }
   }
 
@@ -27,7 +27,7 @@ class ContactScreen extends StatelessWidget {
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
-      Get.snackbar("خطأ", "تطبيق واتساب غير مثبت أو لا يمكن فتح الرابط");
+      Get.snackbar("Error".tr,"WhatsApp application not installed or the link cannot be opened".tr);
     }
   }
 
@@ -37,7 +37,7 @@ class ContactScreen extends StatelessWidget {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
-          "اتصل بنا".tr,
+          "Contact us".tr,
           style: const TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
@@ -74,19 +74,19 @@ class ContactScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              "الدعم الفني للمندوبين",
+            Text(
+             "Technical support for delegates".tr,
               style: TextStyle(color: textColor, fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "إذا كنت تواجه أي مشكلة في طلباتك أو حسابك، نحن هنا لمساعدتك على مدار الساعة.",
+            Text(
+              "If you are experiencing any problem with your orders or account, we are here to help you 24/7.".tr,
               textAlign: TextAlign.center,
               style: TextStyle(color: iconColor, fontSize: 14, height: 1.5),
             ),
             const SizedBox(height: 40),
             _buildContactMethodCard(
-              title: "اتصال هاتفي",
+              title: "Telephone call".tr,
               subtitle: phoneNumber,
               icon: Icons.phone_forwarded_rounded,
               accentColor: primaryColor,
@@ -94,8 +94,8 @@ class ContactScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _buildContactMethodCard(
-              title: "المحادثة عبر واتساب",
-              subtitle: "تواصل معنا مباشرة عبر الدردشة",
+              title: "WhatsApp conversation".tr,
+              subtitle: "Contact us directly via chat".tr,
               icon: Icons.chat_bubble_rounded,
               accentColor: const Color(0xFF25D366),
               onTap: _openWhatsApp,

@@ -1,5 +1,4 @@
 import 'package:delivery/routes.dart';
-import 'package:delivery/view/widget/home/OrderDeliveryCard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controller/home_controller.dart';
@@ -109,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "طلب رقم #${order["id"] ?? ''}",
+                                              "Request number #".tr+" "+order["id"],
                                               style: const TextStyle(
                                                 color: textColor,
                                                 fontSize: 16,
@@ -128,7 +127,6 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            // 💡 استخدام toNamed بدلاً من offNamed وتمرير كائن الـ order الحالي في الـ arguments
                                             Get.toNamed(
                                               AppRoutes.detailesOrder,
                                               arguments: {"orderModel": order},
@@ -140,10 +138,10 @@ class HomeScreen extends StatelessWidget {
                                               horizontal: 12,
                                             ),
                                           ),
-                                          child: const Row(
+                                          child: Row(
                                             children: [
                                               Text(
-                                                "التفاصيل",
+                                                "Details".tr,
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -191,15 +189,15 @@ class HomeScreen extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
                                           children: [
-                                            const Text(
-                                              "الحساب",
+                                             Text(
+                                              "The bill".tr,
                                               style: TextStyle(
                                                 color: Color(0xFF64748B),
                                                 fontSize: 11,
                                               ),
                                             ),
                                             Text(
-                                              "${order["total"] ?? 0} ج.م",
+                                              "${order["total"] ?? 0} "+"egp".tr,
                                               style: const TextStyle(
                                                 color: primaryColor,
                                                 fontSize: 16,
@@ -219,11 +217,11 @@ class HomeScreen extends StatelessWidget {
                                             child: OutlinedButton(
                                               onPressed: () {
                                                 Get.defaultDialog(
-                                                  title: "تأكيد الرفض",
+                                                  title: "Confirmation of rejection".tr,
                                                   middleText:
-                                                      "هل أنت متأكد من رغبتك في رفض هذا الطلب؟",
-                                                  textConfirm: "نعم، ارفض",
-                                                  textCancel: "تراجع",
+                                                      "Are you sure you want to refuse this request?".tr,
+                                                  textConfirm: "Yes, I refuse.".tr,
+                                                  textCancel: "to retreat".tr,
                                                   confirmTextColor:
                                                       Colors.white,
                                                   buttonColor: const Color(
@@ -234,11 +232,11 @@ class HomeScreen extends StatelessWidget {
                                                       order["id"],
                                                     );
 
-                                                    Get.back(); // إغلاق الدايلوج
-                                                    Get.back(); // العودة للشاشة السابقة
+                                                    Get.back(); 
+                                                    Get.back();
                                                     Get.snackbar(
-                                                      "تم الرفض",
-                                                      "تم رفض الطلب بنجاح",
+                                                      "access denied".tr,
+                                                      "The request was successfully rejected".tr,
                                                       snackPosition:
                                                           SnackPosition.BOTTOM,
                                                       backgroundColor: Colors
@@ -263,8 +261,8 @@ class HomeScreen extends StatelessWidget {
                                                       BorderRadius.circular(8),
                                                 ),
                                               ),
-                                              child: const Text(
-                                                "رفض الطلب",
+                                              child: Text(
+                                               "Request rejected".tr,
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -279,11 +277,11 @@ class HomeScreen extends StatelessWidget {
                                             child: ElevatedButton(
                                               onPressed: () {
                                                 Get.defaultDialog(
-                                                  title: "تأكيد القبول",
+                                                  title: "Confirmation of acceptance".tr,
                                                   middleText:
-                                                      "هل تريد قبول هذا الطلب وبدء عملية التوصيل؟",
-                                                  textConfirm: "تأكيد القبول",
-                                                  textCancel: "تراجع",
+                                                     "Do you want to accept this order and start the delivery process?".tr,
+                                                  textConfirm: "Confirmation of acceptance".tr,
+                                                  textCancel:"to retreat".tr,
                                                   confirmTextColor:
                                                       Colors.white,
                                                   buttonColor: primaryColor,
@@ -295,8 +293,8 @@ class HomeScreen extends StatelessWidget {
                                                     Get.back(); // إغلاق الدايلوج
                                                     Get.back(); // العودة للشاشة السابقة
                                                     Get.snackbar(
-                                                      "تم القبول",
-                                                      "تم قبول الطلب، بالتوفيق في رحلتك!",
+                                                      "Accepted".tr,
+                                                     "Your request has been accepted, have a good trip!".tr,
                                                       snackPosition:
                                                           SnackPosition.BOTTOM,
                                                       backgroundColor: Colors
@@ -316,8 +314,8 @@ class HomeScreen extends StatelessWidget {
                                                       BorderRadius.circular(8),
                                                 ),
                                               ),
-                                              child: const Text(
-                                                "قبول وتوصيل",
+                                              child:  Text(
+                                                "Acceptance and delivery".tr,
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),

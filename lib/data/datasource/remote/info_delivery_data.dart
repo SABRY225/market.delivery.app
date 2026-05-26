@@ -10,7 +10,7 @@ class InfoDeliveryData {
  var userId = LocalStorage.getUserId();
 
   getProfile() async {
-    var response = await crud.postData(AppLink.infoDelivery+'/$userId', {});
+    var response = await crud.postData("${AppLink.infoDelivery}/$userId", {});
     return response.fold((l) => l, (r) => r);
   }
 }

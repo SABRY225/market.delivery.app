@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 Widget buildBottomNav(BuildContext context, int currentTabsIndex) {
-  // استخدام find بدلاً من put لمنع مسح بيانات الكنترولر وإعادة بنائه
   final HomeController homeController = Get.find<HomeController>();
   final OrderController orderController = Get.find<OrderController>();
 

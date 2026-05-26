@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 class OrderDetailsController extends GetxController {
   var isLoading = false.obs;
   OrderController orderController = Get.put(OrderController());
+  
   Future<bool> cancelOrder(String orderId, String reason) async {
     try {
       isLoading.value = true;
@@ -17,20 +18,31 @@ class OrderDetailsController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        Get.snackbar("تم بنجاح", "تم إلغاء الطلب بنجاح",backgroundColor: Colors.green);
+        Get.snackbar(
+          "success_title".tr, 
+          "order_cancelled_success".tr,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
         orderController.getData();
         Get.toNamed(AppRoutes.orders);
         return true;
       } else {
         Get.snackbar(
-          "خطأ",
-          response.body['message'] ?? "فشلت عملية إلغاء الطلب",
-          backgroundColor: Colors.red
+          "error_title".tr,
+          response.body['message'] ?? "order_cancelled_failed".tr,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
         );
         return false;
       }
     } catch (e) {
-      Get.snackbar("خطأ", "حدث خطأ في الاتصال بالسيرفر");
+      Get.snackbar(
+        "error_title".tr, 
+        "server_error".tr,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return false;
     } finally {
       isLoading.value = false;
@@ -48,23 +60,30 @@ class OrderDetailsController extends GetxController {
       );
       if (response.statusCode == 200) {
         Get.snackbar(
-          "تم بنجاح",
-          "تم تسجيل تسليم الطلب بنجاح",
+          "success_title".tr,
+          "order_delivered_success".tr,
           backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
         orderController.getData();
         Get.toNamed(AppRoutes.orders);
         return true;
       } else {
         Get.snackbar(
-          "خطأ",
-          response.body['message'] ?? "فشلت عملية تسليم الطلب",
+          "error_title".tr,
+          response.body['message'] ?? "order_delivered_failed".tr,
           backgroundColor: Colors.red,
+          colorText: Colors.white,
         );
         return false;
       }
     } catch (e) {
-      Get.snackbar("خطأ", "حدث خطأ في الاتصال بالسيرفر");
+      Get.snackbar(
+        "error_title".tr, 
+        "server_error".tr,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return false;
     } finally {
       isLoading.value = false;

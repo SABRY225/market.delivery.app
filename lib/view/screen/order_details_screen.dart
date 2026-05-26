@@ -22,19 +22,19 @@ class OrderDetailsScreen extends StatelessWidget {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return {'distance': 'خدمة الموقع معطلة', 'position': null};
+      return {'distance': 'loc_service_disabled'.tr, 'position': null};
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return {'distance': 'تم رفض إذن الموقع', 'position': null};
+        return {'distance': 'loc_permission_denied'.tr, 'position': null};
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return {'distance': 'الإذن مرفوض دائماً', 'position': null};
+      return {'distance': 'loc_permission_forever_denied'.tr, 'position': null};
     }
 
     Position currentPosition = await Geolocator.getCurrentPosition(
@@ -51,9 +51,9 @@ class OrderDetailsScreen extends StatelessWidget {
     String formattedDistance;
     if (distanceInMeters >= 1000) {
       double distanceInKm = distanceInMeters / 1000;
-      formattedDistance = "${distanceInKm.toStringAsFixed(2)} كم";
+      formattedDistance = "${distanceInKm.toStringAsFixed(2)} ${'km'.tr}";
     } else {
-      formattedDistance = "${distanceInMeters.toStringAsFixed(0)} متر";
+      formattedDistance = "${distanceInMeters.toStringAsFixed(0)} ${'meter'.tr}";
     }
 
     return {
@@ -67,7 +67,7 @@ class OrderDetailsScreen extends StatelessWidget {
     if (await canLaunchUrl(launchUri)) {
       await launchUrl(launchUri);
     } else {
-      Get.snackbar("خطأ", "لا يمكن إجراء المكالمة الآن");
+      Get.snackbar("error_title".tr, "cannot_call_now".tr);
     }
   }
 
@@ -75,7 +75,7 @@ class OrderDetailsScreen extends StatelessWidget {
     final TextEditingController reasonController = TextEditingController();
 
     Get.defaultDialog(
-      title: "سبب إلغاء الطلب".tr,
+      title: "cancel_reason_title".tr,
       titleStyle: const TextStyle(
         color: textColor,
         fontWeight: FontWeight.bold,
@@ -86,18 +86,18 @@ class OrderDetailsScreen extends StatelessWidget {
           controller: reasonController,
           maxLines: 3,
           decoration: InputDecoration(
-            hintText: "اكتب سبب الإلغاء هنا...".tr,
+            hintText: "cancel_reason_hint".tr,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           ),
         ),
       ),
-      textConfirm: "تأكيد الإلغاء".tr,
-      textCancel: "تراجع".tr,
+      textConfirm: "confirm_cancel".tr,
+      textCancel: "back".tr,
       confirmTextColor: Colors.white,
       buttonColor: Colors.red,
       onConfirm: () async {
         if (reasonController.text.trim().isEmpty) {
-          Get.snackbar("تنبيه", "يرجى كتابة سبب الإلغاء أولاً");
+          Get.snackbar("warning_title".tr, "please_write_reason".tr);
         } else {
           Get.back();
           await controller.cancelOrder(
@@ -115,7 +115,7 @@ class OrderDetailsScreen extends StatelessWidget {
 
     final Map orderData = Get.arguments?['orderData'] ?? {};
     String orderId = orderData['id']?.toString() ?? "";
-    String customerName = orderData['customer'] ?? "عميل غير معروف";
+    String customerName = orderData['customer'] ?? "unknown_customer".tr;
     String customerPhone = orderData['phone']?.toString() ?? "";
 
     double lat =
@@ -133,9 +133,9 @@ class OrderDetailsScreen extends StatelessWidget {
     );
 
     String total = orderData['total']?.toString() ?? "0";
-    String status = orderData['status'] ?? "غير محدد";
+    String status = orderData['status'] ?? "pending";
     String startTime = orderData['startTime'] ?? "";
-    String paymentMethod = orderData['payment'] ?? "كاش";
+    String paymentMethod = orderData['payment'] ?? "cash";
     List items = orderData['items'] as List? ?? [];
 
     return Scaffold(
@@ -164,7 +164,7 @@ class OrderDetailsScreen extends StatelessWidget {
               icon: Icons.person_outline,
               child: Column(
                 children: [
-                  _buildDetailRow("The client:".tr, customerName),
+                  _buildDetailRow("client_name".tr, customerName),
                   const Divider(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -173,7 +173,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "رقم الهاتف:".tr,
+                            "phone_number".tr,
                             style: const TextStyle(
                               color: iconColor,
                               fontSize: 14,
@@ -181,7 +181,7 @@ class OrderDetailsScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            customerPhone.isEmpty ? "غير مسجل" : customerPhone,
+                            customerPhone.isEmpty ? "not_registered".tr : customerPhone,
                             style: const TextStyle(
                               color: textColor,
                               fontWeight: FontWeight.w600,
@@ -201,11 +201,11 @@ class OrderDetailsScreen extends StatelessWidget {
                     ],
                   ),
                   const Divider(height: 20),
-                  _buildDetailRow("time".tr + ":", startTime),
+                  _buildDetailRow("time".tr, startTime),
                   const Divider(height: 20),
                   _buildDetailRow(
-                    "payment".tr + ":",
-                    paymentMethod.toUpperCase().tr,
+                    "payment".tr,
+                    paymentMethod.toLowerCase().tr,
                   ),
                 ],
               ),
@@ -216,7 +216,7 @@ class OrderDetailsScreen extends StatelessWidget {
             FutureBuilder<Map<String, dynamic>>(
               future: _getDeliveryLocationAndDistance(customerLocation),
               builder: (context, snapshot) {
-                String distanceText = "جاري تحديد المسار والمسافة...";
+                String distanceText = "calculating_route".tr;
                 LatLng? deliveryLocation;
 
                 if (snapshot.connectionState == ConnectionState.done &&
@@ -231,7 +231,7 @@ class OrderDetailsScreen extends StatelessWidget {
                     position: customerLocation,
                     infoWindow: InfoWindow(
                       title: customerName,
-                      snippet: 'موقع توصيل الطلب',
+                      snippet: 'delivery_destination_snippet'.tr,
                     ),
                   ),
                 };
@@ -247,9 +247,9 @@ class OrderDetailsScreen extends StatelessWidget {
                       icon: BitmapDescriptor.defaultMarkerWithHue(
                         BitmapDescriptor.hueBlue,
                       ),
-                      infoWindow: const InfoWindow(
-                        title: 'موقعي الحالي',
-                        snippet: 'الدليفري',
+                      infoWindow: InfoWindow(
+                        title: 'my_current_location'.tr,
+                        snippet: 'delivery_driver'.tr,
                       ),
                     ),
                   );
@@ -267,16 +267,16 @@ class OrderDetailsScreen extends StatelessWidget {
                 }
 
                 return _buildSectionCard(
-                  title: "موقع التوصيل ومسار الحركة".tr,
+                  title: "delivery_location_route".tr,
                   icon: Icons.map_outlined,
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "المسافة الحالية للعميل:",
-                            style: TextStyle(
+                          Text(
+                            "current_distance_to_client".tr,
+                            style: const TextStyle(
                               color: textColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
@@ -306,26 +306,19 @@ class OrderDetailsScreen extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: SizedBox(
-                          height:
-                              320, // تم تكبير الارتفاع من 200 إلى 320 لتصبح الخريطة ضخمة ومريحة للعين
+                          height: 320, // تم تكبير الارتفاع من 200 إلى 320 لتصبح الخريطة ضخمة ومريحة للعين
                           width: double.infinity,
                           child: GoogleMap(
                             initialCameraPosition: initialCameraPosition,
                             mapType: MapType.normal,
 
                             // تفعيل كافة مميزات التحكم الكامل بالخريطة
-                            myLocationButtonEnabled:
-                                true, // زر الانتقال للموقع الحالي
-                            zoomControlsEnabled:
-                                true, // أزرار التكبير والتصغير (+ / -)
-                            zoomGesturesEnabled:
-                                true, // السماح بالتكبير بإصبعين
-                            scrollGesturesEnabled:
-                                true, // السماح بسحب الخريطة والتحرك فيها
-                            tiltGesturesEnabled:
-                                true, // السماح بإمالة الخريطة بأبعاد ثلاثية
-                            rotateGesturesEnabled:
-                                true, // السماح بتدوير الخريطة
+                            myLocationButtonEnabled: true, // زر الانتقال للموقع الحالي
+                            zoomControlsEnabled: true, // أزرار التكبير والتصغير (+ / -)
+                            zoomGesturesEnabled: true, // السماح بالتكبير بإصبعين
+                            scrollGesturesEnabled: true, // السماح بسحب الخريطة والتحرك فيها
+                            tiltGesturesEnabled: true, // السماح بإمالة الخريطة بأبعاد ثلاثية
+                            rotateGesturesEnabled: true, // السماح بتدوير الخريطة
 
                             markers: mapMarkers,
                             polylines: mapPolylines, // تمرير خط المسار للخريطة
@@ -343,7 +336,7 @@ class OrderDetailsScreen extends StatelessWidget {
               title: "order_items".tr,
               icon: Icons.shopping_basket_outlined,
               child: items.isEmpty
-                  ? Center(child: Text("Order without products".tr))
+                  ? Center(child: Text("order_without_products".tr))
                   : ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -351,8 +344,7 @@ class OrderDetailsScreen extends StatelessWidget {
                       separatorBuilder: (_, __) => const Divider(height: 20),
                       itemBuilder: (context, index) {
                         final item = items[index];
-                        String name =
-                            item['name'] ?? "Product without a name".tr;
+                        String name = item['name'] ?? "product_without_name".tr;
                         String qty = item['qty']?.toString() ?? "1";
                         String price = item['price']?.toString() ?? "0";
                         return Row(
@@ -495,7 +487,7 @@ class OrderDetailsScreen extends StatelessWidget {
       statusText = "in_searching";
       bannerColor = const Color(0xFFF59E0B);
     } else if (status == 'shipped') {
-      statusText = "in_Shopping";
+      statusText = "in_shopping";
       bannerColor = const Color(0xFF3B82F6);
     } else if (status == 'delivered') {
       statusText = "completed";
@@ -560,7 +552,7 @@ class OrderDetailsScreen extends StatelessWidget {
               onPressed: () => _showCancelDialog(orderId, controller),
               icon: const Icon(Icons.cancel_outlined, color: Colors.red),
               label: Text(
-                "إلغاء الطلب".tr,
+                "cancel_order".tr,
                 style: const TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.bold,
@@ -585,7 +577,7 @@ class OrderDetailsScreen extends StatelessWidget {
               },
               icon: const Icon(Icons.check_circle_outline, color: Colors.white),
               label: Text(
-                "تسليم الطلب".tr,
+                "deliver_order".tr,
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
