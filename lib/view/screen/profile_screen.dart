@@ -6,10 +6,11 @@ import '../../routes.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5722); 
-  static const Color textColor = Color(0xFF1E293B);    
-  static const Color iconColor = Color(0xFF64748B);    
-  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
+  static Color get primaryColor => const Color(0xFFFF5722); 
+  static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);    
+  static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);    
+  static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
+  static Color get cardColor => Get.isDarkMode ? const Color(0xFF1E293B) : Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: textColor),
+          icon: Icon(Icons.arrow_back_ios, color: textColor),
           onPressed: () => Get.offAllNamed(AppRoutes.home),
         ),
       ),
@@ -49,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 15),
             Text(
               name,
-              style: const TextStyle(
+              style: TextStyle(
                 color: textColor,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -98,9 +99,10 @@ class ProfileScreen extends StatelessWidget {
                     _buildListTile(
                       icon: Icons.logout,
                       title: "logout".tr,
-                      iconColor: Colors.redAccent,
+                      // تم تصحيح الاسم هنا ليطابق المتغير الموجود في الدالة بالأسفل
+                      customIconColor: const Color.fromARGB(255, 241, 234, 234),
                       onTap: () async {
-                        await LocalStorage.clear();
+                        LocalStorage.clear();
                         Get.offAllNamed(AppRoutes.login);
                       },
                     ),
@@ -118,34 +120,34 @@ class ProfileScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
-    Color iconColor = iconColor,
+    Color? customIconColor,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
         leading: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
+            color: (customIconColor ?? iconColor).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, color: iconColor, size: 22),
+          child: Icon(icon, color: customIconColor ?? iconColor, size: 22),
         ),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             color: textColor,
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -156,7 +158,7 @@ class ProfileScreen extends StatelessWidget {
           color: Color(0xFFCBD5E1),
           size: 14,
         ),
-        onTap: onTap,
+        onTap: onTap, // تم إبقاء استدعاء واحد فقط هنا
       ),
     );
   }

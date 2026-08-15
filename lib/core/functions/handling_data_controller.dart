@@ -1,6 +1,6 @@
 import '../class/status_request.dart';
 
-handlingData(response) {
+StatusRequest handlingData(response) {
   if (response is StatusRequest) {
     return response; 
   } else {

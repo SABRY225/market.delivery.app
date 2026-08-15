@@ -6,10 +6,10 @@ import '../../../core/class/status_request.dart';
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5722);
-  static const Color textColor = Color(0xFF1E293B);
-  static const Color iconColor = Color(0xFF64748B);
-  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
+  static Color get primaryColor => const Color(0xFFFF5722);
+  static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);
+  static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);
+  static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class StatisticsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "statistics".tr,
-          style: const TextStyle(
+          style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -30,28 +30,28 @@ class StatisticsScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: textColor),
+          icon: Icon(Icons.arrow_back_ios, color: textColor),
           onPressed: () => Get.back(),
         ),
       ),
       body: GetBuilder<StatisticsController>(
         builder: (controller) {
           if (controller.statusRequest == StatusRequest.loading) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(color: primaryColor),
             );
           } else if (controller.statusRequest == StatusRequest.offlinefailure) {
             return Center(
               child: Text(
                 "no_internet_connection".tr,
-                style: const TextStyle(color: textColor),
+                style: TextStyle(color: textColor),
               ),
             );
           } else if (controller.statusRequest == StatusRequest.serverfailure) {
             return Center(
               child: Text(
                 "server_error".tr,
-                style: const TextStyle(color: textColor),
+                style: TextStyle(color: textColor),
               ),
             );
           } else {
@@ -120,7 +120,7 @@ class StatisticsScreen extends StatelessWidget {
             children: [
               Text(
                 controller.totalCommission,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
@@ -129,7 +129,7 @@ class StatisticsScreen extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 "egp".tr,
-                style: const TextStyle(
+                style: TextStyle(
                   color: primaryColor,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -138,7 +138,7 @@ class StatisticsScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 15),
-          const Divider(color: Colors.white10, thickness: 1),
+          Divider(color: Colors.white10, thickness: 1),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,8 +152,8 @@ class StatisticsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "${controller.orderCount} "+"orders".tr,
-                    style: const TextStyle(
+                    "${controller.orderCount} ${"orders".tr}",
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -174,6 +174,8 @@ class StatisticsScreen extends StatelessWidget {
   }
 
   Widget _buildOrderHistoryCard(Map<String, dynamic> order) {
+    bool isTrip = order['type'] == 'trip';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -193,17 +195,27 @@ class StatisticsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "order number:".tr+" ${order['id']}",
-                style: const TextStyle(
-                  color: textColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+              Row(
+                children: [
+                  Icon(
+                    isTrip ? Icons.local_taxi_rounded : Icons.moped_rounded,
+                    color: isTrip ? Colors.blue : primaryColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    isTrip ? "مشوار النقل الذكي: ${order['id']}" : "${"order number:".tr} ${order['id']}",
+                    style: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
               Text(
-                "${order['commission']} + "+"commission".tr,
-                style: const TextStyle(
+                "${order['commission']} + ${"commission".tr}",
+                style: TextStyle(
                   color: primaryColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -211,7 +223,7 @@ class StatisticsScreen extends StatelessWidget {
               ),
             ],
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Divider(color: Color(0xFFF1F5F9), thickness: 1),
           ),
@@ -220,17 +232,17 @@ class StatisticsScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.person_outline, color: iconColor, size: 16),
+                  Icon(Icons.person_outline, color: iconColor, size: 16),
                   const SizedBox(width: 6),
                   Text(
-                    "The client:".tr+" ${order['customer']}",
-                    style: const TextStyle(color: iconColor, fontSize: 13),
+                    isTrip ? "الراكب: ${order['customer']}" : "${"The client:".tr} ${order['customer']}",
+                    style: TextStyle(color: iconColor, fontSize: 13),
                   ),
                 ],
               ),
               Text(
-                "total:".tr+" ${double.parse(order['total'] ?? '0').toStringAsFixed(2)} egp",
-                style: const TextStyle(
+                "${"total:".tr} ${double.parse(order['total']?.toString() ?? '0').toStringAsFixed(2)} egp",
+                style: TextStyle(
                   color: textColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -244,7 +256,7 @@ class StatisticsScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.calendar_today_outlined,
                     color: iconColor,
                     size: 14,
@@ -252,17 +264,17 @@ class StatisticsScreen extends StatelessWidget {
                   const SizedBox(width: 6),
                   Text(
                     "${order['date']}",
-                    style: const TextStyle(color: iconColor, fontSize: 12),
+                    style: TextStyle(color: iconColor, fontSize: 12),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  const Icon(Icons.access_time, color: iconColor, size: 14),
+                  Icon(Icons.access_time, color: iconColor, size: 14),
                   const SizedBox(width: 6),
                   Text(
                     "${order['time']}",
-                    style: const TextStyle(color: iconColor, fontSize: 12),
+                    style: TextStyle(color: iconColor, fontSize: 12),
                   ),
                 ],
               ),

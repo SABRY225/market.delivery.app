@@ -9,11 +9,11 @@ class InfoDeliveryController extends GetxController {
   StatusRequest statusRequest = StatusRequest.none;
   Map<String, dynamic> driverData = {};
 
-  getDriverProfile() async {
+  Future<void> getDriverProfile() async {
     statusRequest = StatusRequest.loading;
     update();
 
-    var response = await infoDeliveryData.getProfile();
+    dynamic response = await infoDeliveryData.getProfile();
     statusRequest = handlingData(response);
 
     if (StatusRequest.success == statusRequest) {

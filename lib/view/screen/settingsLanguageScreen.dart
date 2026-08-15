@@ -5,10 +5,11 @@ import '../../controller/locale_controller.dart';
 class SettingsLanguageScreen extends StatelessWidget {
   const SettingsLanguageScreen({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5722); 
-  static const Color textColor = Color(0xFF1E293B);    
-  static const Color iconColor = Color(0xFF64748B);    
-  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
+  static Color get primaryColor => const Color(0xFFFF5722); 
+  static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);    
+  static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);    
+  static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
+  static Color get cardColor => Get.isDarkMode ? const Color(0xFF1E293B) : Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +18,11 @@ class SettingsLanguageScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text("app_language".tr, style: const TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text("app_language".tr, style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: textColor),
+          icon: Icon(Icons.arrow_back_ios, color: textColor),
           onPressed: () => Get.back(),
         ),
       ),
@@ -32,7 +33,7 @@ class SettingsLanguageScreen extends StatelessWidget {
           children: [
             Text(
               "choose_preferred_lang".tr, 
-              style: const TextStyle(color: iconColor, fontSize: 14, fontWeight: FontWeight.w500),
+              style: TextStyle(color: iconColor, fontSize: 14, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 25),
             
@@ -72,15 +73,15 @@ class SettingsLanguageScreen extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? primaryColor : Colors.transparent,
+            color: isSelected ? primaryColor : (Get.isDarkMode ? Colors.white12 : Colors.transparent),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Get.isDarkMode ? Colors.transparent : Colors.black.withOpacity(0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -88,26 +89,26 @@ class SettingsLanguageScreen extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(flag, style: const TextStyle(fontSize: 24)),
+            Text(flag, style: TextStyle(fontSize: 24)),
             const SizedBox(width: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(color: iconColor, fontSize: 12),
+                  style: TextStyle(color: iconColor, fontSize: 12),
                 ),
               ],
             ),
             const Spacer(),
             if (isSelected)
-              const Icon(Icons.check_circle, color: primaryColor, size: 24)
+              Icon(Icons.check_circle, color: primaryColor, size: 24)
             else
-              const Icon(Icons.circle_outlined, color: Color(0xFFCBD5E1), size: 24),
+              Icon(Icons.circle_outlined, color: Color(0xFFCBD5E1), size: 24),
           ],
         ),
       ),

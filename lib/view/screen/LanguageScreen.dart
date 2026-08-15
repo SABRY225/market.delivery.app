@@ -5,10 +5,11 @@ import '../../controller/locale_controller.dart';
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5722);
-  static const Color textColor = Color(0xFF1E293B);
-  static const Color iconColor = Color(0xFF64748B);
-  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
+  static Color get primaryColor => const Color(0xFFFF5722);
+  static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);
+  static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);
+  static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
+  static Color get cardColor => Get.isDarkMode ? const Color(0xFF1E293B) : Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +41,23 @@ class LanguageScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white,
+                      color: cardColor,
                       boxShadow: [
                         BoxShadow(
-                          color: primaryColor.withOpacity(0.1),
+                          color: Get.isDarkMode ? Colors.transparent : primaryColor.withOpacity(0.1),
                           blurRadius: 30,
                           spreadRadius: 2,
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.language_rounded,
                       size: 70,
                       color: primaryColor,
                     ),
                   ),
                   const SizedBox(height: 40),
-                  const Text(
+                  Text(
                     "Select Language",
                     style: TextStyle(
                       color: textColor,
@@ -66,7 +67,7 @@ class LanguageScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     "اختر اللغة المناسبة للتطبيق",
                     style: TextStyle(color: iconColor, fontSize: 16, fontWeight: FontWeight.w500),
                   ),
@@ -105,11 +106,11 @@ class LanguageScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Get.isDarkMode ? Colors.transparent : Colors.black.withOpacity(0.02),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -125,7 +126,7 @@ class LanguageScreen extends StatelessWidget {
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(flag, style: const TextStyle(fontSize: 24)),
+              child: Text(flag, style: TextStyle(fontSize: 24)),
             ),
             const SizedBox(width: 20),
             Column(
@@ -133,7 +134,7 @@ class LanguageScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: textColor,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -141,12 +142,12 @@ class LanguageScreen extends StatelessWidget {
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(color: iconColor, fontSize: 13),
+                  style: TextStyle(color: iconColor, fontSize: 13),
                 ),
               ],
             ),
             const Spacer(),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               color: primaryColor,
               size: 16,

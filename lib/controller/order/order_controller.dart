@@ -16,7 +16,7 @@ class OrderController extends GetxController {
     statusRequest = StatusRequest.loading;
     update();
 
-    var response = await orderData.getData();
+    dynamic response = await orderData.getData();
     statusRequest = handlingData(response);
 
     if (StatusRequest.success == statusRequest) {

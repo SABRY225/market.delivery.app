@@ -30,17 +30,17 @@ class OrderSummary extends StatelessWidget {
       child: Column(
         children: [
           _buildRow(
-            "Subtotal".tr + "($quantity " + "items".tr + ")",
-            "${subtotal.toStringAsFixed(2)} " + "egp".tr,
+            "${"Subtotal".tr}($quantity ${"items".tr})",
+            "${subtotal.toStringAsFixed(2)} ${"egp".tr}",
           ),
           _buildRow(
             "Shipping Fee".tr,
-            "${shipping.toStringAsFixed(2)} " + "egp".tr,
+            "${shipping.toStringAsFixed(2)} ${"egp".tr}",
           ),
           const Divider(color: Colors.white10, height: 20),
           _buildRow(
             "Total Amount".tr,
-            "${total.toStringAsFixed(2)} " + "egp".tr,
+            "${total.toStringAsFixed(2)} ${"egp".tr}",
             isTotal: true,
           ),
         ],

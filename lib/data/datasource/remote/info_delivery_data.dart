@@ -9,7 +9,7 @@ class InfoDeliveryData {
   InfoDeliveryData(this.crud);
  var userId = LocalStorage.getUserId();
 
-  getProfile() async {
+  Future<Object> getProfile() async {
     var response = await crud.postData("${AppLink.infoDelivery}/$userId", {});
     return response.fold((l) => l, (r) => r);
   }

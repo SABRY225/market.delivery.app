@@ -6,10 +6,11 @@ import '../../../core/class/status_request.dart';
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5722);
-  static const Color textColor = Color(0xFF1E293B);
-  static const Color iconColor = Color(0xFF64748B);
-  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
+  static Color get primaryColor => const Color(0xFFFF5722);
+  static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);
+  static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);
+  static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
+  static Color get cardColor => Get.isDarkMode ? const Color(0xFF1E293B) : Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +21,17 @@ class OrdersScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "my_orders".tr,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: textColor),
+          style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: textColor),
+        iconTheme: IconThemeData(color: textColor),
       ),
       body: GetBuilder<OrderController>(
         builder: (controller) {
           if (controller.statusRequest == StatusRequest.loading) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(color: primaryColor),
             );
           } else if (controller.statusRequest == StatusRequest.offlinefailure) {
@@ -124,11 +125,11 @@ class OrdersScreen extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 15),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Get.isDarkMode ? Colors.transparent : Colors.black.withOpacity(0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -141,8 +142,8 @@ class OrdersScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "order number:".tr + " #$orderId",
-                  style: const TextStyle(
+                  "${"order number:".tr} #$orderId",
+                  style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -150,7 +151,7 @@ class OrdersScreen extends StatelessWidget {
                 ),
                 Text(
                   '$total ${"egp".tr}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -158,7 +159,7 @@ class OrdersScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
               child: Divider(color: Color(0xFFE2E8F0), thickness: 1),
             ),
@@ -205,7 +206,7 @@ class OrdersScreen extends StatelessWidget {
                   ),
                   child: Text(
                     status.tr,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
@@ -254,7 +255,7 @@ class OrdersScreen extends StatelessWidget {
           const SizedBox(height: 15),
           Text(
             message,
-            style: const TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w500),
+            style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ],
       ),

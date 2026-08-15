@@ -6,7 +6,7 @@ class OrderData {
   Crud crud;
   OrderData(this.crud);
   var userId = LocalStorage.getUserId();
-  getData() async {
+  Future<Object> getData() async {
     var response = await crud.getData(
       "${AppLink.getOrders}/$userId/myorders",
     );

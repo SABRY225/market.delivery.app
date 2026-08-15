@@ -6,10 +6,11 @@ import '../../../core/class/status_request.dart';
 class InfoDeliveryScreen extends StatelessWidget {
   const InfoDeliveryScreen({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5722); 
-  static const Color textColor = Color(0xFF1E293B);    
-  static const Color iconColor = Color(0xFF64748B);    
-  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
+  static Color get primaryColor => const Color(0xFFFF5722); 
+  static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);    
+  static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);    
+  static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
+  static Color get cardColor => Get.isDarkMode ? const Color(0xFF1E293B) : Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +21,24 @@ class InfoDeliveryScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "info_delivery".tr,
-          style: const TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: textColor),
+          icon: Icon(Icons.arrow_back_ios, color: textColor),
           onPressed: () => Get.back(),
         ),
       ),
       body: GetBuilder<InfoDeliveryController>(
         builder: (controller) {
           if (controller.statusRequest == StatusRequest.loading) {
-            return const Center(child: CircularProgressIndicator(color: primaryColor));
+            return Center(child: CircularProgressIndicator(color: primaryColor));
           } else if (controller.statusRequest == StatusRequest.offlinefailure) {
-            return Center(child: Text("no_internet_connection".tr, style: const TextStyle(color: textColor)));
+            return Center(child: Text("no_internet_connection".tr, style: TextStyle(color: textColor)));
           } else if (controller.statusRequest == StatusRequest.serverfailure) {
-            return Center(child: Text("server_error".tr, style: const TextStyle(color: textColor)));
+            return Center(child: Text("server_error".tr, style: TextStyle(color: textColor)));
           } else {
             final data = controller.driverData;
             return ListView(
@@ -51,7 +52,7 @@ class InfoDeliveryScreen extends StatelessWidget {
                   _buildDetailTile(Icons.email_outlined, "e-mail".tr, data["email"]),
                   _buildDetailTile(Icons.phone_android_outlined, "phone number".tr, data["phone"]),
                   _buildDetailTile(Icons.chat_bubble_outline_rounded, "WhatsApp".tr, data["whatsapp"]),
-                  _buildDetailTile(Icons.cake_outlined, "date of birth", data["dob"]),
+                  _buildDetailTile(Icons.cake_outlined, "date of birth".tr, data["dob"]),
                   _buildDetailTile(Icons.person_outline, "Sex".tr, data["gender"] == "male" ? "male".tr : "feminine".tr),
                 ]),
                 const SizedBox(height: 25),
@@ -83,7 +84,7 @@ class InfoDeliveryScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10, left: 4, right: 4),
       child: Text(
         title,
-        style: const TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.bold),
+        style: TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -91,10 +92,10 @@ class InfoDeliveryScreen extends StatelessWidget {
   Widget _buildInfoGroup(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(color: Get.isDarkMode ? Colors.transparent : Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
       child: Column(children: children),
@@ -114,7 +115,7 @@ class InfoDeliveryScreen extends StatelessWidget {
           CircleAvatar(
             radius: 35,
             backgroundColor: Colors.white.withOpacity(0.1),
-            child: const Icon(Icons.person, color: Colors.white, size: 35),
+            child: Icon(Icons.person, color: Colors.white, size: 35),
           ),
           const SizedBox(width: 15),
           Expanded(
@@ -123,7 +124,7 @@ class InfoDeliveryScreen extends StatelessWidget {
               children: [
                 Text(
                   data["username"] ?? "",
-                  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 6),
                 Row(
@@ -136,7 +137,7 @@ class InfoDeliveryScreen extends StatelessWidget {
                       ),
                       child: Text(
                         isVerified ? "Verified" : "unVerified",
-                        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -148,11 +149,11 @@ class InfoDeliveryScreen extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.star, color: primaryColor, size: 12),
+                          Icon(Icons.star, color: primaryColor, size: 12),
                           const SizedBox(width: 4),
                           Text(
                             data["rating"] ?? "0.0",
-                            style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                            style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -170,18 +171,18 @@ class InfoDeliveryScreen extends StatelessWidget {
   Widget _buildDetailTile(IconData icon, String label, String? value) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Get.isDarkMode ? Colors.white12 : const Color(0xFFF1F5F9), width: 1)),
       ),
       child: Row(
         children: [
           Icon(icon, color: iconColor, size: 20),
           const SizedBox(width: 12),
-          Text(label, style: const TextStyle(color: iconColor, fontSize: 14)),
+          Text(label, style: TextStyle(color: iconColor, fontSize: 14)),
           const Spacer(),
           Text(
             value ?? "nothing".tr,
-            style: const TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w600),
+            style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w600),
           ),
         ],
       ),

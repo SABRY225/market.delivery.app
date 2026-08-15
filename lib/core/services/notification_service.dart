@@ -24,7 +24,7 @@ class NotificationService {
 
   static Future<void> showNotification({required String title, required String body}) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
+      AndroidNotificationDetails(
       'orders_channel_id', 
       'New Orders',        
       importance: Importance.max,

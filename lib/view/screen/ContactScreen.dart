@@ -1,104 +1,202 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:delivery/controller/SupportController.dart';
 
-class ContactScreen extends StatelessWidget {
-  const ContactScreen({super.key});
-
-  static const Color primaryColor = Color(0xFFFF5722);
-  static const Color textColor = Color(0xFF1E293B);
-  static const Color iconColor = Color(0xFF64748B);
-  static const Color backgroundColor = Color.fromARGB(255, 238, 236, 236);
-
-  final String phoneNumber = "+201012345678";
-  final String whatsappNumber = "+201012345678";
-
-  void _makePhoneCall() async {
-    final Uri url = Uri.parse('tel:$phoneNumber');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      Get.snackbar("Error".tr, "The call cannot be made at this time.".tr);
-    }
-  }
-
-  void _openWhatsApp() async {
-    final Uri url = Uri.parse("https://wa.me/$whatsappNumber");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      Get.snackbar("Error".tr,"WhatsApp application not installed or the link cannot be opened".tr);
-    }
-  }
+class SupportChatScreen extends StatelessWidget {
+  const SupportChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final SupportController controller = Get.put(SupportController());
+    final theme = Theme.of(context);
+    final isDark = Get.isDarkMode;
+    final bgColor = Get.theme.scaffoldBackgroundColor;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: bgColor,
       appBar: AppBar(
-        title: Text(
-          "Contact us".tr,
-          style: const TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: textColor),
-          onPressed: () => Get.back(),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        elevation: 0.5,
+        backgroundColor: cardColor,
+        centerTitle: false,
+        titleSpacing: 0,
+        iconTheme: IconThemeData(color: textColor),
+        title: Row(
           children: [
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
-                    blurRadius: 20,
-                    offset: const Offset(0, 4),
+            Stack(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: theme.primaryColor.withOpacity(0.1),
+                  child: Icon(Icons.headset_mic_rounded, color: theme.primaryColor),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
                   ),
-                ],
+                ),
+              ],
+            ),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'دعم المندوبين',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'رد سريع • متصل',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh_rounded, color: textColor),
+            tooltip: 'تحديث',
+            onPressed: () => controller.fetchChatHistory(),
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
+      body: Column(
+        children: [
+          // قائمة الرسائل
+          Expanded(
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.messages.isEmpty) {
+                return _buildEmptyState();
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                itemCount: controller.messages.length,
+                itemBuilder: (context, index) {
+                  final msg = controller.messages[index];
+                  return _buildMessageBubble(context, msg);
+                },
+              );
+            }),
+          ),
+
+          // اقتراحات الرد السريع للمندوب
+          _buildQuickReplies(controller),
+
+          // شريط إدخال الرسالة
+          _buildInputBar(context, controller),
+        ],
+      ),
+    );
+  }
+
+
+  // ردود سريعة بضغطة زر دون الحاجة للكتابة أثناء القيادة
+  Widget _buildQuickReplies(SupportController controller) {
+    final isDark = Get.isDarkMode;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    
+    final List<String> quickMessages = [
+      'العميل لا يجيب',
+      'العنوان غير واضح',
+      'تأخير في استلام الطلب',
+      'مشكلة في الدفع',
+    ];
+
+    return Container(
+      height: 40,
+      margin: const EdgeInsets.only(bottom: 6),
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        scrollDirection: Axis.horizontal,
+        itemCount: quickMessages.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final text = quickMessages[index];
+          return ActionChip(
+            backgroundColor: cardColor,
+            elevation: 1,
+            side: BorderSide(color: isDark ? Colors.white12 : Colors.grey.shade300),
+            label: Text(
+              text,
+              style: TextStyle(fontSize: 12, color: textColor),
+            ),
+            onPressed: () {
+              controller.messageInputController.text = text;
+              controller.sendMessage();
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  // شاشة الفراغ
+  Widget _buildEmptyState() {
+    final isDark = Get.isDarkMode;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.blue.shade50,
+                shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.support_agent_rounded,
-                size: 80,
-                color: primaryColor,
+                size: 56,
+                color: Colors.blue.shade600,
               ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-             "Technical support for delegates".tr,
-              style: TextStyle(color: textColor, fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "If you are experiencing any problem with your orders or account, we are here to help you 24/7.".tr,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: iconColor, fontSize: 14, height: 1.5),
-            ),
-            const SizedBox(height: 40),
-            _buildContactMethodCard(
-              title: "Telephone call".tr,
-              subtitle: phoneNumber,
-              icon: Icons.phone_forwarded_rounded,
-              accentColor: primaryColor,
-              onTap: _makePhoneCall,
             ),
             const SizedBox(height: 16),
-            _buildContactMethodCard(
-              title: "WhatsApp conversation".tr,
-              subtitle: "Contact us directly via chat".tr,
-              icon: Icons.chat_bubble_rounded,
-              accentColor: const Color(0xFF25D366),
-              onTap: _openWhatsApp,
+            Text(
+              'أهلاً بك في دعم المندوبين',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'اختر أحد الردود السريعة بالأسفل أو اكتب مشكلتك وسيتم مساعدتك فوراً.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+                height: 1.4,
+              ),
             ),
           ],
         ),
@@ -106,60 +204,159 @@ class ContactScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContactMethodCard({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Color accentColor,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+  // فقاعة الرسالة
+  Widget _buildMessageBubble(BuildContext context, dynamic message) {
+    final bool isMe = message.isSentByMe;
+    final primaryColor = Theme.of(context).primaryColor;
+    final isDark = Get.isDarkMode;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Column(
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (!isMe) ...[
+                CircleAvatar(
+                  radius: 14,
+                  backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.blue.shade100,
+                  child: Icon(Icons.headset_mic, size: 15, color: Colors.blue),
+                ),
+                const SizedBox(width: 8),
+              ],
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.78,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isMe ? primaryColor : cardColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
+                      bottomLeft: Radius.circular(isMe ? 16 : 4),
+                      bottomRight: Radius.circular(isMe ? 4 : 16),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isDark ? Colors.transparent : Colors.black.withOpacity(0.04),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (!isMe && (message.senderName?.isNotEmpty ?? false)) ...[
+                        Text(
+                          message.senderName,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.blue.shade300 : Colors.blue.shade700,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                      ],
+                      Text(
+                        message.messageText ?? '',
+                        style: TextStyle(
+                          color: isMe ? Colors.white : textColor,
+                          fontSize: 14,
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // شريط الإدخال
+  Widget _buildInputBar(BuildContext context, SupportController controller) {
+    final primaryColor = Theme.of(context).primaryColor;
+    final isDark = Get.isDarkMode;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final inputBgColor = isDark ? const Color(0xFF0F172A) : Colors.grey.shade100;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: cardColor,
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.transparent : Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SafeArea(
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: accentColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: inputBgColor,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: TextField(
+                  controller: controller.messageInputController,
+                  maxLines: 3,
+                  minLines: 1,
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    hintText: 'اكتب رسالة للدعم...',
+                    hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.grey.shade500, fontSize: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    border: InputBorder.none,
+                  ),
+                ),
               ),
-              child: Icon(icon, color: accentColor, size: 26),
             ),
-            const SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(color: textColor, fontSize: 16, fontWeight: FontWeight.bold),
+            const SizedBox(width: 8),
+            Obx(() {
+              final bool isSending = controller.isSending.value;
+              return Material(
+                color: isSending ? Colors.grey.shade300 : primaryColor,
+                shape: const CircleBorder(),
+                elevation: 1,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: isSending ? null : () => controller.sendMessage(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: isSending
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: const TextStyle(color: iconColor, fontSize: 13),
-                ),
-              ],
-            ),
-            const Spacer(),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: iconColor,
-              size: 16,
-            ),
+              );
+            }),
           ],
         ),
       ),

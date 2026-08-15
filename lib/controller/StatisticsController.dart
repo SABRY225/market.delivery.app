@@ -12,11 +12,11 @@ class StatisticsController extends GetxController {
   String orderCount = "0";
   List ordersLog = [];
 
-  getStatisticsData() async {
+  Future<void> getStatisticsData() async {
     statusRequest = StatusRequest.loading;
     update();
 
-    var response = await statisticsData.getStats();
+    dynamic response = await statisticsData.getStats();
     statusRequest = handlingData(response);
 
     if (StatusRequest.success == statusRequest) {

@@ -15,7 +15,7 @@ Widget buildBottomNav(BuildContext context, int currentTabsIndex) {
   return GetBuilder<HomeController>(
     builder: (controller) {
       final int currentOrdersCount = orderController.orderCounts ?? 0;
-      final int readyOrdersCount = homeController.orderReadyCont ?? 0;
+      final int readyOrdersCount = 0;
 
       return Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16), 

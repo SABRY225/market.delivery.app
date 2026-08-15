@@ -8,7 +8,7 @@ class StatisticsData {
 
   StatisticsData(this.crud);
  var userId = LocalStorage.getUserId();
-  getStats() async {
+  Future<Object> getStats() async {
     var response = await crud.getData("${AppLink.statistics}+$userId/myorders-history");
     return response.fold((l) => l, (r) => r);
   }

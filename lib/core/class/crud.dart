@@ -43,6 +43,26 @@ class Crud {
       return const Left(StatusRequest.offlinefailure);
     }
   }
+    Future<Either<StatusRequest, Map>> patchData(
+    String linkurl,
+    Map data,
+  ) async {
+    try {
+      var response = await http.put(
+        Uri.parse(linkurl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(data),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map responsebody = jsonDecode(response.body);
+        return Right(responsebody);
+      } else {
+        return const Left(StatusRequest.serverfailure);
+      }
+    } catch (e) {
+      return const Left(StatusRequest.offlinefailure);
+    }
+  }
 
   Future<Either<StatusRequest, Map>> getData(String linkurl) async {
     try {

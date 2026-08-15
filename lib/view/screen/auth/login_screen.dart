@@ -16,93 +16,168 @@ class LoginScreen extends StatelessWidget {
     Get.put(LoginController());
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 238, 236, 236), 
+      backgroundColor: const Color(0xFFF8FAFC), // لون خلفية مريح وعصري
       body: GetBuilder<LoginController>(
-        builder: (controller) => Container(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-          child: ListView(
-            children: [
-              const SizedBox(height: 80),
-              const CircleAvatar(
-                radius: 120, 
-                backgroundImage: AssetImage("assets/images/logo.png"),
-                backgroundColor: Colors.transparent,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "welcome_back".tr,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: textColor, 
-                  fontSize: 26, 
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 40),
-
-              _buildTextField(
-                controller: controller.email,
-                hint: "email_address".tr,
-                icon: Icons.email_outlined,
-              ),
-              const SizedBox(height: 20),
-
-              SizedBox(
-                height: 55,
-                child: controller.statusRequest == StatusRequest.loading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: primaryColor),
-                      )
-                    : ElevatedButton(
-                        onPressed: () => controller.login(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor, 
-                          foregroundColor: Colors.white, 
-                          elevation: 1, 
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+        builder: (controller) => SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // شعار التطبيق بتصميم دائري أنيق
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
-                        ),
-                        child: Text(
-                          "login".tr,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            letterSpacing: 1,
-                            color: Colors.white,
-                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 70, 
+                        backgroundImage: AssetImage("assets/images/logo.png"),
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  // نص الترحيب
+                  Text(
+                    "welcome_back".tr,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: textColor, 
+                      fontSize: 28, 
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+
+                  // حقل رقم الهاتف مع كود دولة مصر
+                  TextFormField(
+                    controller: controller.phone, // تأكد من تعريف phone في الـ Controller
+                    keyboardType: TextInputType.phone,
+                    style: TextStyle(color: textColor, fontSize: 16), 
+                    decoration: InputDecoration(
+                      hintText: "phone_number".tr,
+                      hintStyle: TextStyle(color: iconColor, fontSize: 14),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(Icons.phone_android_outlined, color: iconColor),
+                            SizedBox(width: 8),
+                            Text(
+                              "+20 ",
+                              style: TextStyle(
+                                color: textColor, 
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+                      filled: true,
+                      fillColor: fieldColor,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none, 
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1), 
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: primaryColor, width: 1.5), 
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-  }) {
-    return TextFormField(
-      controller: controller,
-      style: const TextStyle(color: textColor), 
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: iconColor, fontSize: 14),
-        prefixIcon: Icon(icon, color: iconColor),
-        filled: true,
-        fillColor: fieldColor,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none, 
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1), 
+                  // حقل كلمة المرور مع ميزة الإخفاء والإظهار
+                  TextFormField(
+                    controller: controller.password, // تأكد من تعريف password في الـ Controller
+                    obscureText: controller.isPasswordHidden, // تأكد من تعريف المتغير الفلاني في الـ Controller
+                    style: TextStyle(color: textColor, fontSize: 16), 
+                    decoration: InputDecoration(
+                      hintText: "password".tr,
+                      hintStyle: TextStyle(color: iconColor, fontSize: 14),
+                      prefixIcon: Icon(Icons.lock_outline_rounded, color: iconColor),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordHidden 
+                              ? Icons.visibility_off_outlined 
+                              : Icons.visibility_outlined,
+                          color: iconColor,
+                        ),
+                        onPressed: () {
+                          controller.isPasswordHidden = !controller.isPasswordHidden;
+                          controller.update(); // لتحديث الواجهة عند الضغط
+                        },
+                      ),
+                      filled: true,
+                      fillColor: fieldColor,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none, 
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1), 
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: primaryColor, width: 1.5), 
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // زر تسجيل الدخول / مؤشر التحميل
+                  SizedBox(
+                    height: 56,
+                    child: controller.statusRequest == StatusRequest.loading
+                        ? Center(
+                            child: CircularProgressIndicator(color: primaryColor),
+                          )
+                        : ElevatedButton(
+                            onPressed: () => controller.login(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor, 
+                              foregroundColor: Colors.white, 
+                              elevation: 2, 
+                              shadowColor: primaryColor.withOpacity(0.4),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              "login".tr,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                letterSpacing: 0.5,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
