@@ -128,7 +128,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
               ]
             ),
             child: Text(
-              "قم بتفعيل الأيام التي ترغب بالعمل فيها خلال هذا الشهر، وحدد أوقات البداية والنهاية لكل يوم.",
+              "activate_days_msg".tr,
               style: TextStyle(color: subTextColor, fontSize: 13, height: 1.5),
             ),
           ),
@@ -197,7 +197,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                                     ),
                                   ),
                                   if (isToday)
-                                    Text("اليوم", style: TextStyle(color: Colors.blue, fontSize: 11, fontWeight: FontWeight.bold)),
+                                    Text("today_word".tr, style: TextStyle(color: Colors.blue, fontSize: 11, fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ),
@@ -230,7 +230,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("وقت البدء", style: TextStyle(color: Colors.grey, fontSize: 11)),
+                                        Text("start_time".tr, style: TextStyle(color: Colors.grey, fontSize: 11)),
                                         const SizedBox(height: 4),
                                         Text(day['start'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFFF5722))),
                                       ],
@@ -252,7 +252,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("وقت الانتهاء", style: TextStyle(color: Colors.grey, fontSize: 11)),
+                                        Text("end_time".tr, style: TextStyle(color: Colors.grey, fontSize: 11)),
                                         const SizedBox(height: 4),
                                         Text(day['end'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFFF5722))),
                                       ],
@@ -289,8 +289,8 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                 ),
                 onPressed: () {
                   Get.snackbar(
-                    "تم الحفظ بنجاح",
-                    "تم تحديث جدول عملك لهذا الشهر بنجاح.",
+                    "saved_successfully".tr,
+                    "schedule_updated_successfully".tr,
                     backgroundColor: Colors.green,
                     colorText: Colors.white,
                     snackPosition: SnackPosition.BOTTOM,
@@ -298,7 +298,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                   );
                 },
                 child: Text(
-                  "اعتماد جدول الشهر",
+                  "approve_month_schedule".tr,
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),

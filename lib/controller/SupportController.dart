@@ -57,14 +57,24 @@ class SupportController extends GetxController {
   Future<void> fetchChatHistory() async {
     try {
       isLoading.value = true;
+      final url = '${AppLink.contact}/driver/history';
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${LocalStorage.getToken()}',
+      };
+
+      print('=============================================');
+      print('🚀 [API REQUEST] GET $url');
+      print('Headers: $headers');
+
       final response = await http.get(
-        Uri.parse('${AppLink.contact}/driver/history'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${LocalStorage.getToken()}',
-        },
+        Uri.parse(url),
+        headers: headers,
       );
-    print('Response Body: ${response.body}');
+      
+      print('📦 [API RESPONSE] Status: ${response.statusCode}');
+      print('Body: ${response.body}');
+      print('=============================================');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -72,11 +82,20 @@ class SupportController extends GetxController {
           List list = data['data'];
           messages.value = list.map((m) => MessageModel.fromJson(m)).toList();
         }
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        LocalStorage.clear();
+        Get.offAllNamed('/login'); // Assuming AppRoutes.login resolves to this
+        Get.snackbar(
+          'تنبيه', 
+          'جلسة الدخول منتهية، يرجى إعادة التسجيل',
+          snackPosition: SnackPosition.BOTTOM,
+        );
       } else {
-        Get.snackbar('خطأ', 'فشل في جلب سجل المحادثة');
+        Get.snackbar('خطأ', 'فشل في جلب سجل المحادثة', snackPosition: SnackPosition.BOTTOM);
       }
     } catch (e) {
-      Get.snackbar('خطأ', 'حدث خطأ في الاتصال بالشبكة');
+      print('🔴 [API ERROR] $e');
+      Get.snackbar('خطأ', 'حدث خطأ في الاتصال بالشبكة', snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
     }
@@ -89,33 +108,72 @@ Future<void> sendMessage() async {
 
   final token = LocalStorage.getToken();
   if (token == null || token.isEmpty) {
-    Get.snackbar('خطأ', 'جلسة الدخول منتهية، يرجى إعادة التسجيل');
+    Get.snackbar('تنبيه', 'جلسة الدخول منتهية، يرجى إعادة التسجيل', snackPosition: SnackPosition.BOTTOM);
     return;
   }
 
   try {
     isSending.value = true;
 
+    final url = '${AppLink.contact}/driver/message';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final body = json.encode({'messageText': text});
+
+    print('=============================================');
+    print('🚀 [API REQUEST] POST $url');
+    print('Headers: $headers');
+    print('Body: $body');
+
     final response = await http.post(
-      Uri.parse('${AppLink.contact}/driver/message'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: json.encode({'messageText': text}),
+      Uri.parse(url),
+      headers: headers,
+      body: body,
     );
 
+    print('📦 [API RESPONSE] Status: ${response.statusCode}');
+    print('Body: ${response.body}');
+    print('=============================================');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       messageInputController.clear(); // مسح الإدخال فقط عند النجاح
       await fetchChatHistory();
-    } else if (response.statusCode == 403) {
-      Get.snackbar('خطأ', 'ليس لديك صلاحية للوصول لهذا الدعم');
+    } else if (response.statusCode == 401 || response.statusCode == 403) {
+      LocalStorage.clear();
+      Get.offAllNamed('/login');
+      Get.snackbar(
+        'تنبيه',
+        'جلسة الدخول منتهية، يرجى إعادة التسجيل',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } else {
-      Get.snackbar('خطأ', 'تعذر إرسال الرسالة: ${response.statusCode}');
+      String errorMessage = 'تعذر إرسال الرسالة، يرجى المحاولة لاحقاً.';
+      try {
+        final decoded = json.decode(response.body);
+        if (decoded['message'] != null) {
+          errorMessage = decoded['message'];
+        } else if (decoded['error'] != null) {
+          errorMessage = decoded['error'];
+        }
+      } catch (_) {}
+      
+      Get.snackbar(
+        'خطأ في الإرسال',
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
     }
   } catch (e) {
-    Get.snackbar('خطأ', 'حدث خطأ أثناء الإرسال');
+    print('🔴 [API ERROR] $e');
+    Get.snackbar(
+      'مشكلة في الاتصال',
+      'تأكد من اتصالك بالإنترنت وحاول مجدداً.',
+      snackPosition: SnackPosition.BOTTOM,
+    );
   } finally {
     isSending.value = false;
   }

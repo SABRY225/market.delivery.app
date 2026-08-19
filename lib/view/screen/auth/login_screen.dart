@@ -75,14 +75,7 @@ class LoginScreen extends StatelessWidget {
                           children: const [
                             Icon(Icons.phone_android_outlined, color: iconColor),
                             SizedBox(width: 8),
-                            Text(
-                              "+20 ",
-                              style: TextStyle(
-                                color: textColor, 
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16
-                              ),
-                            ),
+
                           ],
                         ),
                       ),

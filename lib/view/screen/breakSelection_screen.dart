@@ -49,13 +49,13 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
           );
         }
       } else {
-        throw Exception('فشل في إرسال الطلب');
+        throw Exception('failed_to_send_request'.tr);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('حدث خطأ في الاتصال بالسيرفر: $e'),
+            content: Text("${'server_error_msg'.tr}: $e"),
             backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -86,7 +86,7 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
-          'طلب استراحة للمندوب',
+          'delegate_break_request'.tr,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: textColor),
         ),
         centerTitle: true,
@@ -119,7 +119,7 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
                       ),
                       SizedBox(height: 12),
                       Text(
-                        'هل تحتاج إلى قسط من الراحة؟',
+                        'need_a_break'.tr,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -129,7 +129,7 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
                       ),
                       SizedBox(height: 6),
                       Text(
-                        'اختر المدة المناسبة وسيتم إيقاف استقبال الطلبات مؤقتاً لحين انتهاء استراحتك.',
+                        'choose_break_duration_msg'.tr,
                         style: TextStyle(
                           fontSize: 14,
                           color: subTextColor,
@@ -144,7 +144,7 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
               const SizedBox(height: 30),
               
               Text(
-                'حدد مدة الاستراحة:',
+                'select_break_duration'.tr,
                 style: TextStyle(
                   fontSize: 16, 
                   fontWeight: FontWeight.bold, 
@@ -214,7 +214,7 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
                                     ),
                                   ),
                                   Text(
-                                    duration == 1 ? 'دقيقة واحدة' : 'دقيقة',
+                                    duration == 1 ? 'one_minute'.tr : 'minutes'.tr,
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w500,
@@ -265,13 +265,13 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
                           strokeWidth: 2.5,
                         ),
                       )
-                    : const Row(
+                    : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.play_arrow_rounded, color: Colors.white),
                           SizedBox(width: 8),
                           Text(
-                            'تأكيد وبدء الاستراحة',
+                            'confirm_start_break'.tr,
                             style: TextStyle(
                               fontSize: 16, 
                               fontWeight: FontWeight.bold,

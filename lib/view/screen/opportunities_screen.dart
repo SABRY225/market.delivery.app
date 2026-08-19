@@ -18,7 +18,7 @@ class OpportunitiesScreen extends StatelessWidget {
       backgroundColor: bgColor,
       appBar: AppBar(
         title: Text(
-          "تحديات وفرص".tr,
+          "challenges_and_opportunities".tr,
           style: TextStyle(
             color: titleColor,
             fontWeight: FontWeight.bold,
@@ -41,11 +41,11 @@ class OpportunitiesScreen extends StatelessWidget {
                   Icon(Icons.emoji_events_outlined, size: 80, color: Colors.grey.withOpacity(0.3)),
                   const SizedBox(height: 16),
                   Text(
-                    "لا توجد تحديات متاحة حالياً".tr,
+                    "no_challenges_available".tr,
                     style: TextStyle(fontSize: 18, color: Colors.grey, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  Text("ترقب التحديات القادمة لزيادة أرباحك!", style: TextStyle(color: Colors.grey)),
+                  Text("stay_tuned_for_challenges".tr, style: TextStyle(color: Colors.grey)),
                 ],
               ),
             );
@@ -125,7 +125,7 @@ class OpportunitiesScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            opp['title'] ?? 'فرصة بونص',
+                            opp['title'] ?? 'bonus_opportunity'.tr,
                             style: TextStyle(
                               color: textColor,
                               fontWeight: FontWeight.bold,
@@ -134,7 +134,7 @@ class OpportunitiesScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "مهمة إضافية لزيادة أرباحك",
+                            "extra_task_to_increase_profits".tr,
                             style: TextStyle(
                               color: subTextColor,
                               fontSize: 12,
@@ -167,11 +167,11 @@ class OpportunitiesScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          Row(
                             children: [
                               Icon(Icons.calendar_today_rounded, size: 14, color: Colors.grey),
                               SizedBox(width: 4),
-                              Text("الوقت والتاريخ", style: TextStyle(color: Colors.grey, fontSize: 11)),
+                              Text("time_and_date".tr, style: TextStyle(color: Colors.grey, fontSize: 11)),
                             ],
                           ),
                           const SizedBox(height: 6),
@@ -181,7 +181,7 @@ class OpportunitiesScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            "${opp['start_time'] ?? '-'} إلى ${opp['end_time'] ?? '-'}",
+                            "${opp['start_time'] ?? '-'} ${'to_word'.tr} ${opp['end_time'] ?? '-'}",
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: textColor),
                           ),
                         ],
@@ -194,10 +194,10 @@ class OpportunitiesScreen extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            Text("العائد الإضافي", style: TextStyle(color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold)),
+                            Text("extra_revenue".tr, style: TextStyle(color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold)),
                             const SizedBox(height: 4),
                             Text(
-                              "+${opp['reward']} ج",
+                              "+${opp['reward']} ${'currency'.tr}",
                               style: TextStyle(
                                 color: Colors.green,
                                 fontWeight: FontWeight.w900,
@@ -221,11 +221,11 @@ class OpportunitiesScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                     onPressed: () => controller.acceptOpportunity(opp['id'].toString()),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "قبول الفرصة",
+                          "accept_opportunity".tr,
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
                         ),
                       ],

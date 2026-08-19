@@ -22,7 +22,7 @@ class DeliveryWalletScreen extends StatelessWidget {
       backgroundColor: bgColor,
       appBar: AppBar(
         title: Text(
-          'محفظة المندوب والطلبات',
+          'delegate_wallet_and_orders'.tr,
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
         ),
         centerTitle: true,
@@ -93,9 +93,9 @@ class DeliveryWalletScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildStatCard(
-                          title: "المبلغ للتوريد",
+                          title: 'amount_to_supply'.tr,
                           value:
-                              "${controller.amountToHandOver.toStringAsFixed(2)} ج.م",
+                              "${controller.amountToHandOver.toStringAsFixed(2)} ${'currency'.tr}",
                           icon: Icons.account_balance_wallet_rounded,
                           primaryColor: Colors.amber.shade900,
                           backgroundColor: const Color(0xFFFFF8E1),
@@ -104,8 +104,8 @@ class DeliveryWalletScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _buildStatCard(
-                          title: "إجمالي الطلبات",
-                          value: "${controller.totalOrdersCount} طلب",
+                          title: 'total_orders_count'.tr,
+                          value: "${controller.totalOrdersCount} ${'order'.tr}",
                           icon: Icons.local_shipping_rounded,
                           primaryColor: Colors.blueAccent,
                           backgroundColor: const Color(0xFFEBF3FF),
@@ -121,7 +121,7 @@ class DeliveryWalletScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "سجل الطلبات والتكاليف",
+                        'orders_and_costs_log'.tr,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
@@ -129,7 +129,7 @@ class DeliveryWalletScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${controller.ordersLog.length} سجل",
+                        "${controller.ordersLog.length} ${'record'.tr}",
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey.shade500,
@@ -282,7 +282,7 @@ class DeliveryWalletScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "طلب #${order.orderId}",
+                      "${'order'.tr} #${order.orderId}",
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         fontSize: 11,
@@ -316,7 +316,7 @@ class DeliveryWalletScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "تكلفة الطلب",
+                'order_cost'.tr,
                 style: TextStyle(
                   fontSize: 10,
                   color: Colors.grey.shade400,
@@ -325,7 +325,7 @@ class DeliveryWalletScreen extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                "${order.totalPaidToRestaurant.toStringAsFixed(2)} ج.م",
+                "${order.totalPaidToRestaurant.toStringAsFixed(2)} ${'currency'.tr}",
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: Colors.redAccent,
@@ -349,7 +349,7 @@ class DeliveryWalletScreen extends StatelessWidget {
             Icon(Icons.inbox_rounded, size: 64, color: Colors.grey.shade300),
             const SizedBox(height: 12),
             Text(
-              "لا توجد طلبات مسجلة حالياً",
+              'no_orders_recorded_currently'.tr,
               style: TextStyle(
                 color: Colors.grey.shade500,
                 fontSize: 14,

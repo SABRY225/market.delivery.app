@@ -52,14 +52,32 @@ Future<void> login() async {
   if (StatusRequest.success == statusRequest) {
     print("Login successful: $response");
     // حفظ بيانات المستخدم محلياً
+    int pUserId = 0;
+    if (response['user']['id'] != null) {
+      pUserId = int.tryParse(response['user']['id'].toString()) ?? 0;
+    }
+    
+    bool pOnline = false;
+    if (response['user']['online'] != null) {
+      if (response['user']['online'] is bool) {
+        pOnline = response['user']['online'];
+      } else {
+        pOnline = response['user']['online'].toString().toLowerCase() == 'true' || response['user']['online'].toString() == '1';
+      }
+    }
+
+    String pToken = response['token']?.toString() ?? '';
+
     LocalStorage.setUser(
-      token: response['token'] ?? '',
-      email: response['user']['email'] ?? '',
-      name: response['user']['name'] ?? '',
-      workingMode: response['user']['workingMode'] ?? '',
-      userId: response['user']['id'] ?? '',
-      online: response['user']['online'] ?? '',
+      token: pToken,
+      email: response['user']['email']?.toString() ?? '',
+      name: response['user']['name']?.toString() ?? '',
+      workingMode: response['user']['workingMode']?.toString() ?? '',
+      userId: pUserId,
+      online: pOnline,
     );
+
+    print("🔑 [LOCAL STORAGE] Token saved: ${LocalStorage.getToken()}");
 
     Get.offNamed(AppRoutes.idscan);
 

@@ -24,126 +24,126 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   // 1. جلب التنبيهات من الـ Backend
   Future<void> _fetchNotifications() async {
-    final String url =
-        '${AppLink.deliveryStatus}/${LocalStorage.getUserId()}/notifications';
+      final String url =
+          '${AppLink.deliveryStatus}/${LocalStorage.getUserId()}/notifications';
 
-    try {
-      final response = await http.get(Uri.parse(url));
-      setState(() {
-        _notifications = json.decode(response.body);
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() => _isLoading = false);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('حدث خطأ أثناء الاتصال بالخادم: $e'),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  // 2. تحديث حالة التنبيه إلى "مقروء" عند الضغط عليه
-  Future<void> _markAsRead(int notificationId, int index) async {
-    final String url =
-        '${AppLink.deliveryStatus}/${LocalStorage.getUserId()}/notifications/read/$notificationId';
-
-    try {
-      final response = await http.put(Uri.parse(url));
-      if (response.statusCode == 200) {
+      try {
+        final response = await http.get(Uri.parse(url));
         setState(() {
-          _notifications[index]['read'] = true;
+          _notifications = json.decode(response.body);
+          _isLoading = false;
         });
+      } catch (e) {
+        setState(() => _isLoading = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("${'server_connection_error'.tr}: $e"),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
       }
-    } catch (e) {
-      print('خطأ في تحديث حالة التنبيه: $e');
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    // لون برتقالي عصري وتدرجات متناسقة تتماشى مع هويتك الأساسية
-    const Color primaryColor = Color(0xFFFF5722);
-    final isDark = Get.isDarkMode;
-    final bgColor = Get.theme.scaffoldBackgroundColor;
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final titleColor = isDark ? Colors.white : Colors.black;
-    final unreadBgColor = isDark ? const Color(0xFF2D1610) : const Color(0xFFFFF3EE);
-    final subTextColor = isDark ? Colors.white70 : Colors.grey;
+    // 2. تحديث حالة التنبيه إلى "مقروء" عند الضغط عليه
+    Future<void> _markAsRead(int notificationId, int index) async {
+      final String url =
+          '${AppLink.deliveryStatus}/${LocalStorage.getUserId()}/notifications/read/$notificationId';
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: bgColor,
-        appBar: AppBar(
-          title: Text(
-            'مركز التنبيهات',
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              fontSize: 20,
-              color: Colors.white,
-              letterSpacing: 0.5,
+      try {
+        final response = await http.put(Uri.parse(url));
+        if (response.statusCode == 200) {
+          setState(() {
+            _notifications[index]['read'] = true;
+          });
+        }
+      } catch (e) {
+        print('خطأ في تحديث حالة التنبيه: $e');
+      }
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      // لون برتقالي عصري وتدرجات متناسقة تتماشى مع هويتك الأساسية
+      const Color primaryColor = Color(0xFFFF5722);
+      final isDark = Get.isDarkMode;
+      final bgColor = Get.theme.scaffoldBackgroundColor;
+      final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+      final textColor = isDark ? Colors.white : Colors.black87;
+      final titleColor = isDark ? Colors.white : Colors.black;
+      final unreadBgColor = isDark ? const Color(0xFF2D1610) : const Color(0xFFFFF3EE);
+      final subTextColor = isDark ? Colors.white70 : Colors.grey;
+
+      return Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          backgroundColor: bgColor,
+          appBar: AppBar(
+            title: Text(
+              'notifications_center'.tr,
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                color: Colors.white,
+                letterSpacing: 0.5,
+              ),
+            ),
+            elevation: 0,
+            backgroundColor: primaryColor,
+            centerTitle: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(
+                  16,
+                ), // انحناء خفيف لأسفل الـ AppBar ليعطيه طابعاً حديثاً
+              ),
             ),
           ),
-          elevation: 0,
-          backgroundColor: primaryColor,
-          centerTitle: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(
-                16,
-              ), // انحناء خفيف لأسفل الـ AppBar ليعطيه طابعاً حديثاً
-            ),
-          ),
-        ),
-        body: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                ),
-              )
-            : _notifications.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // أيقونة دلالية ممتازة في حال عدم وجود تنبيهات
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: primaryColor.withOpacity(0.1),
-                        shape: BoxShape.circle,
+          body: _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                  ),
+                )
+              : _notifications.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // أيقونة دلالية ممتازة في حال عدم وجود تنبيهات
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: primaryColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.notifications_off_outlined,
+                          size: 64,
+                          color: primaryColor,
+                        ),
                       ),
-                      child: Icon(
-                        Icons.notifications_off_outlined,
-                        size: 64,
-                        color: primaryColor,
+                      const SizedBox(height: 16),
+                      Text(
+                        'empty_notifications'.tr,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: titleColor,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'صندوق التنبيهات فارغ',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: titleColor,
+                      const SizedBox(height: 6),
+                      Text(
+                        'notifications_will_appear_here'.tr,
+                        style: TextStyle(fontSize: 14, color: subTextColor),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'عندما تصلك تنبيهات جديدة ستظهر هنا فوراً',
-                      style: TextStyle(fontSize: 14, color: subTextColor),
-                    ),
-                  ],
-                ),
-              )
+                    ],
+                  ),
+                )
             : RefreshIndicator(
                 color: primaryColor,
                 onRefresh: _fetchNotifications,

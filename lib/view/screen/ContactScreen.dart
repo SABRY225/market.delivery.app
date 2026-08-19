@@ -51,7 +51,7 @@ class SupportChatScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'دعم المندوبين',
+                  'delegate_support'.tr,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -60,7 +60,7 @@ class SupportChatScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  'رد سريع • متصل',
+                  'quick_reply_online'.tr,
                   style: TextStyle(
                     fontSize: 11,
                     color: Colors.green,
@@ -122,10 +122,10 @@ class SupportChatScreen extends StatelessWidget {
     final textColor = isDark ? Colors.white : Colors.black87;
     
     final List<String> quickMessages = [
-      'العميل لا يجيب',
-      'العنوان غير واضح',
-      'تأخير في استلام الطلب',
-      'مشكلة في الدفع',
+      'customer_not_answering'.tr,
+      'address_not_clear'.tr,
+      'delay_in_receiving_order'.tr,
+      'payment_problem'.tr,
     ];
 
     return Container(
@@ -181,7 +181,7 @@ class SupportChatScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'أهلاً بك في دعم المندوبين',
+              'welcome_to_delegate_support'.tr,
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
@@ -190,7 +190,7 @@ class SupportChatScreen extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'اختر أحد الردود السريعة بالأسفل أو اكتب مشكلتك وسيتم مساعدتك فوراً.',
+              'choose_quick_reply_msg'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -319,7 +319,7 @@ class SupportChatScreen extends StatelessWidget {
                   minLines: 1,
                   style: TextStyle(color: textColor),
                   decoration: InputDecoration(
-                    hintText: 'اكتب رسالة للدعم...',
+                    hintText: 'write_support_message'.tr,
                     hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.grey.shade500, fontSize: 14),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     border: InputBorder.none,

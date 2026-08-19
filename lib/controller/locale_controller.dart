@@ -59,7 +59,7 @@ class LocaleController extends GetxController {
     if (token != null && token.isNotEmpty) {
       return AppRoutes.home;
     } else {
-      return AppRoutes.home;
+      return AppRoutes.login;
     }
   }
 }
