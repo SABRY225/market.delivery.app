@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 import '../../../core/class/status_request.dart';
 import 'package:delivery/controller/FaceVerificationResult.dart';
 
-/// ألوان الهوية البصرية لشاشة التحقق — سهل تغييرها من مكان واحد
+
 class _VerifyColors {
   static const bg = Color(0xFF0B0D14);
-  static const primary = Color(0xFF00C2FF); // أزرق سايبر
+  static const primary = Color(0xFF00C2FF); 
   static const primaryDark = Color(0xFF0072FF);
   static const success = Color(0xFF2BD576);
   static const warning = Color(0xFFFFA13D);
@@ -80,7 +80,6 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
           return Stack(
             fit: StackFit.expand,
             children: [
-              // 1) معاينة الكاميرا
               Transform.scale(
                 scale: 1.2,
                 child: Center(
@@ -88,10 +87,8 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
                 ),
               ),
 
-              // 2) تعتيم زجاجي حول إطار الوجه
               const _FaceScannerOverlay(),
 
-              // 3) إطار المسح المتحرك
               Center(
                 child: AnimatedBuilder(
                   animation: _pulseController,
@@ -121,7 +118,6 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
                     alignment: Alignment.center,
                     clipBehavior: Clip.none,
                     children: [
-                      // خط المسح المتحرك أثناء التحميل
                       if (isLoading)
                         ClipRRect(
                           borderRadius: BorderRadius.circular(40),
@@ -150,14 +146,12 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
                             },
                           ),
                         ),
-                      // أركان المسح الأربعة
                       ..._buildCorners(accent),
                     ],
                   ),
                 ),
               ),
 
-              // 4) الإرشادات العلوية
               Positioned(
                 top: MediaQuery.of(context).padding.top + 70,
                 left: 24,
@@ -170,7 +164,7 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'تأكد من وضوح الإضاءة وثبات الجهاز لأفضل نتيجة',
+                      'Ensure clear lighting and device stability',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.55),
@@ -181,7 +175,6 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
                 ),
               ),
 
-              // 5) زر الالتقاط + بطاقة الإرشادات السفلية
               Positioned(
                 bottom: 32,
                 left: 24,
@@ -246,7 +239,7 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: Text(
-        'التحقق الذكي من الهوية',
+        'Smart ID Verification',
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
@@ -278,7 +271,7 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
           CircularProgressIndicator(color: _VerifyColors.primary),
           const SizedBox(height: 16),
           Text(
-            'جاري تشغيل الكاميرا...',
+            'Starting camera...',
             style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13),
           ),
         ],
@@ -287,7 +280,7 @@ class _HumanVerificationScreenState extends State<HumanVerificationScreen>
   }
 }
 
-/// شارة الحالة أعلى الشاشة (وضع الوجه / جاري الفحص)
+
 class _StatusPill extends StatelessWidget {
   final bool isLoading;
   final Color accent;
@@ -313,7 +306,7 @@ class _StatusPill extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            isLoading ? 'جاري الفحص بالذكاء الاصطناعي...' : 'ضع وجهك في المنتصف',
+            isLoading ? 'AI scanning...' : 'Center your face',
             style: TextStyle(
               color: Colors.white,
               fontSize: 13,
@@ -326,7 +319,7 @@ class _StatusPill extends StatelessWidget {
   }
 }
 
-/// بطاقة إرشادات صغيرة فوق الزر تدي إحساس أكثر احترافية
+
 class _InstructionsCard extends StatelessWidget {
   final bool isLoading;
 
@@ -354,7 +347,7 @@ class _InstructionsCard extends StatelessWidget {
                   const SizedBox(width: 10),
                   const Expanded(
                     child: Text(
-                      'انزع النظارة والكمامة إن وجدت، وتأكد إن وجهك بالكامل داخل الإطار',
+                      'Remove glasses and mask, face in frame',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 12,
@@ -369,7 +362,7 @@ class _InstructionsCard extends StatelessWidget {
   }
 }
 
-/// زر الالتقاط الرئيسي
+
 class _CaptureButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onTap;
@@ -401,7 +394,7 @@ class _CaptureButton extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              'جاري التحقق من هويتك...',
+              'Verifying your identity...',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.85),
                 fontSize: 14,
@@ -441,7 +434,7 @@ class _CaptureButton extends StatelessWidget {
               Icon(Icons.camera_alt_rounded, color: Colors.black, size: 22),
               SizedBox(width: 10),
               Text(
-                'التقاط وبدء التحقق',
+                'Capture & Verify',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 16,
@@ -483,7 +476,7 @@ class HolePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// قناع تعتيم ناعم حول إطار الوجه لمنظر سينمائي احترافي
+
 class _FaceScannerOverlay extends StatelessWidget {
   const _FaceScannerOverlay();
 

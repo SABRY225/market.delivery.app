@@ -14,7 +14,6 @@ class BreakSelectionScreen extends StatefulWidget {
 }
 
 class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
-  // تم تحسين الأوقات وإضافة دقيقة كخيار تجريبي سريع
   final List<int> _breakDurations = [10, 15, 30, 45, 60];
   int? _selectedDuration = 10;
   bool _isLoading = false;
@@ -73,7 +72,6 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // تحديد الألوان الثابتة للتصميم
     const primaryColor = Color(0xFFFF5722);
     final isDark = Get.isDarkMode;
     final backgroundColor = Get.theme.scaffoldBackgroundColor;
@@ -101,7 +99,6 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 10),
-              // الجزء العلوي: أيقونة توضيحية مع رسالة ترحيبية
               Card(
                 elevation: 0,
                 color: isDark ? const Color(0xFF1E293B) : primaryColor.withOpacity(0.06),
@@ -142,7 +139,6 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              
               Text(
                 'select_break_duration'.tr,
                 style: TextStyle(
@@ -153,15 +149,14 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
               ),
               const SizedBox(height: 16),
 
-              // عرض الفترات بشكل شبكة (Grid) احترافية وكبيرة ليسهل الضغط عليها أثناء الحركة
               Expanded(
                 child: GridView.builder(
                   itemCount: _breakDurations.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // عنصرين في كل صف
+                    crossAxisCount: 2, 
                     crossAxisSpacing: 14,
                     mainAxisSpacing: 14,
-                    childAspectRatio: 2.1, // أبعاد الكرت
+                    childAspectRatio: 2.1, 
                   ),
                   itemBuilder: (context, index) {
                     final duration = _breakDurations[index];
@@ -242,7 +237,6 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
                 ),
               ),
 
-              // زر التأكيد السفلي
               ElevatedButton(
                 onPressed: (_isLoading || _selectedDuration == null)
                     ? null

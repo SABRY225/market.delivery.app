@@ -204,7 +204,7 @@ class StatisticsScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    isTrip ? "مشوار النقل الذكي: ${order['id']}" : "${"order number:".tr} ${order['id']}",
+                    isTrip ? "Smart transport ride: ${order['id']}" : "${"order number:".tr} ${order['id']}",
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.bold,
@@ -235,7 +235,7 @@ class StatisticsScreen extends StatelessWidget {
                   Icon(Icons.person_outline, color: iconColor, size: 16),
                   const SizedBox(width: 6),
                   Text(
-                    isTrip ? "الراكب: ${order['customer']}" : "${"The client:".tr} ${order['customer']}",
+                    isTrip ? "Passenger: ${order['customer']}" : "${"The client:".tr} ${order['customer']}",
                     style: TextStyle(color: iconColor, fontSize: 13),
                   ),
                 ],

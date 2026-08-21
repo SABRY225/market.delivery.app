@@ -36,7 +36,7 @@ class OpportunitiesController extends GetxController {
       if (response['status'] == "success") {
         Get.snackbar("Success", "Opportunity accepted successfully",
             backgroundColor: Colors.green, colorText: Colors.white);
-        getData(); // Refresh list
+        getData(); 
       } else {
         Get.snackbar("Error", response['message'] ?? "Error accepting opportunity",
             backgroundColor: Colors.red, colorText: Colors.white);

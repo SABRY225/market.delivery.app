@@ -29,7 +29,6 @@ class ActiveBreakScreen extends StatelessWidget {
             children: [
               const Spacer(),
 
-              // الجزء العلوي: الأيقونة والرسالة
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -52,7 +51,7 @@ class ActiveBreakScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'أنت الآن في فترة استراحة',
+                      'You are on break',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -62,7 +61,7 @@ class ActiveBreakScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'خذ قسطاً من الراحة، سيتم إعادتك للعمل تلقائياً فور انتهاء العداد.',
+                      "Take a break, you'll be returned when timer ends.",
                       style: TextStyle(
                         fontSize: 14,
                         color: subTextColor,
@@ -76,7 +75,6 @@ class ActiveBreakScreen extends StatelessWidget {
 
               const Spacer(),
 
-              // العداد التنازلي مع تأثير التصميم الدائري
               Countdown(
                 seconds: durationInSeconds,
                 interval: const Duration(seconds: 1),
@@ -86,13 +84,11 @@ class ActiveBreakScreen extends StatelessWidget {
                   String timeStr =
                       '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
 
-                  // حساب النسبة المئوية للمؤشر الدائري
                   double progress = time / durationInSeconds;
 
                   return Stack(
                     alignment: Alignment.center,
                     children: [
-                      // حلقة التقدم الخلفية الباهتة
                       SizedBox(
                         width: 220,
                         height: 220,
@@ -104,7 +100,6 @@ class ActiveBreakScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // حلقة التقدم الأمامية المتحركة
                       SizedBox(
                         width: 220,
                         height: 220,
@@ -114,10 +109,9 @@ class ActiveBreakScreen extends StatelessWidget {
                           valueColor: const AlwaysStoppedAnimation<Color>(
                             accentColor,
                           ),
-                          strokeCap: StrokeCap.round, // أطراف دائرية ناعمة للمؤشر
+                          strokeCap: StrokeCap.round, 
                         ),
                       ),
-                      // النص الداخلي للعداد
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -127,12 +121,12 @@ class ActiveBreakScreen extends StatelessWidget {
                               fontSize: 48,
                               fontWeight: FontWeight.w900,
                               color: textColor,
-                              fontFamily: 'monospace', // لثبات أبعاد الأرقام أثناء التغير
+                              fontFamily: 'monospace', 
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'متبقي',
+                            'Remaining',
                             style: TextStyle(
                               fontSize: 14,
                               color: subTextColor,
@@ -152,7 +146,6 @@ class ActiveBreakScreen extends StatelessWidget {
 
               const Spacer(),
 
-              // زر إنهاء الاستراحة مبكراً (مهم جداً للمندوب إذا أراد العودة للعمل سريعاً)
               OutlinedButton.icon(
                 onPressed: () {
                   _showFinishSnackBar(context);
@@ -160,7 +153,7 @@ class ActiveBreakScreen extends StatelessWidget {
                 },
                 icon: Icon(Icons.flash_on_rounded, size: 20, color: accentColor),
                 label: Text(
-                  'إنهاء الاستراحة والعودة للعمل',
+                  'End break and return to work',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -190,7 +183,7 @@ class ActiveBreakScreen extends StatelessWidget {
           children: [
             Icon(Icons.check_circle, color: Colors.white),
             SizedBox(width: 10),
-            Text('تم إنهاء الاستراحة! بالتوفيق في عملك.'),
+            Text('Break ended! Good luck.'),
           ],
         ),
         backgroundColor: Colors.green[600],

@@ -74,7 +74,7 @@ class SupportChatScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.refresh_rounded, color: textColor),
-            tooltip: 'تحديث',
+            tooltip: 'Update',
             onPressed: () => controller.fetchChatHistory(),
           ),
           const SizedBox(width: 4),
@@ -82,7 +82,6 @@ class SupportChatScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // قائمة الرسائل
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -104,10 +103,8 @@ class SupportChatScreen extends StatelessWidget {
             }),
           ),
 
-          // اقتراحات الرد السريع للمندوب
           _buildQuickReplies(controller),
 
-          // شريط إدخال الرسالة
           _buildInputBar(context, controller),
         ],
       ),
@@ -115,12 +112,10 @@ class SupportChatScreen extends StatelessWidget {
   }
 
 
-  // ردود سريعة بضغطة زر دون الحاجة للكتابة أثناء القيادة
   Widget _buildQuickReplies(SupportController controller) {
     final isDark = Get.isDarkMode;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
-    
     final List<String> quickMessages = [
       'customer_not_answering'.tr,
       'address_not_clear'.tr,
@@ -156,7 +151,6 @@ class SupportChatScreen extends StatelessWidget {
     );
   }
 
-  // شاشة الفراغ
   Widget _buildEmptyState() {
     final isDark = Get.isDarkMode;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -204,7 +198,6 @@ class SupportChatScreen extends StatelessWidget {
     );
   }
 
-  // فقاعة الرسالة
   Widget _buildMessageBubble(BuildContext context, dynamic message) {
     final bool isMe = message.isSentByMe;
     final primaryColor = Theme.of(context).primaryColor;
@@ -284,7 +277,6 @@ class SupportChatScreen extends StatelessWidget {
     );
   }
 
-  // شريط الإدخال
   Widget _buildInputBar(BuildContext context, SupportController controller) {
     final primaryColor = Theme.of(context).primaryColor;
     final isDark = Get.isDarkMode;

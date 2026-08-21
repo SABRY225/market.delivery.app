@@ -7,7 +7,6 @@ class DeliveryWalletScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // استخدام Get.put مع الفحص لعدم دمج المكون مرتين
     final DeliveryWalletController controller =
         Get.isRegistered<DeliveryWalletController>()
             ? Get.find<DeliveryWalletController>()
@@ -53,7 +52,6 @@ class DeliveryWalletScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // شريط رسالة الخطأ إن وجد
                   if (controller.errorMessage != null)
                     Container(
                       width: double.infinity,
@@ -88,7 +86,6 @@ class DeliveryWalletScreen extends StatelessWidget {
                       ),
                     ),
 
-                  // كروت الإحصائيات الماليات
                   Row(
                     children: [
                       Expanded(
@@ -116,7 +113,6 @@ class DeliveryWalletScreen extends StatelessWidget {
 
                   const SizedBox(height: 28),
 
-                  // عنوان قائمة الطلبات
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -140,7 +136,6 @@ class DeliveryWalletScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
 
-                  // قائمة الطلبات
                   if (controller.ordersLog.isEmpty)
                     _buildEmptyState()
                   else
@@ -162,7 +157,6 @@ class DeliveryWalletScreen extends StatelessWidget {
     );
   }
 
-  // كارت الإحصائيات
   Widget _buildStatCard({
     required String title,
     required String value,
@@ -224,7 +218,6 @@ class DeliveryWalletScreen extends StatelessWidget {
     );
   }
 
-  // كارت تفاصيل الطلب
   Widget _buildOrderCard(dynamic order) {
     final isDark = Get.isDarkMode;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
@@ -339,7 +332,6 @@ class DeliveryWalletScreen extends StatelessWidget {
     );
   }
 
-  // حالة الشاشة عند خلو البيانات
   Widget _buildEmptyState() {
     return Center(
       child: Padding(

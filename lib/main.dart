@@ -6,21 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'routes.dart';
 
-// 1. استيراد حزم الفايربيس والكاميرا
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:camera/camera.dart'; // 👈 إضافة مكتبة الكاميرا
+import 'package:camera/camera.dart';
 
-// 👈 متغير عام لتخزين أول كاميرا خلفية لاستخدامها في AppRoutes
 late CameraDescription firstCamera;
 
-// 2. دالة التعامل مع التنبيهات والتطبيق مغلق تماماً (Background / Terminated)
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  
-  print("تنبيه تلقائي جديد والتطبيق مغلق: ${message.notification?.title}");
-  
+  print("New automatic alert and the app is closed: ${message.notification?.title}");
   if (message.notification != null) {
     NotificationService.showNotification(
       title: message.notification!.title ?? "",
@@ -39,9 +34,8 @@ void main() async {
       orElse: () => cameras.first,
     );
   } catch (e) {
-    debugPrint("خطأ في تهيئة الكاميرا: $e");
+    debugPrint("Camera initialization error: $e");
   }
-  
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: 'AIzaSyBmJEbx3gCHxmjxQyg-oP2DKlHJPGXFh68',
@@ -51,10 +45,8 @@ void main() async {
     ),
   );
 
-  // 4. ربط دالة الخلفية للاستماع للتنبيهات التلقائية
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // 5. طلب إذن التنبيهات من المستخدم
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   await messaging.requestPermission(
     alert: true,
@@ -62,17 +54,13 @@ void main() async {
     sound: true,
   );
 
-  // 6. تهيئة الـ LocalStorage والـ Localization
   await LocalStorage.init(); 
 
   final LocaleController localeController = Get.put(LocaleController());
 
   String startRoute = await localeController.checkInitialRoute();
 
-  // تهيئة كلاس التنبيهات المحلي
   await NotificationService.init();
-  
-  // 7. الاستماع للتنبيهات والتطبيق مفتوح (Foreground)
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     if (message.notification != null) {
       NotificationService.showNotification(
@@ -81,8 +69,6 @@ void main() async {
       );
     }
   });
-  
-  // تشغيل التطبيق وتمرير المسار الابتدائي
   runApp(AtelierApp(initialRoute: startRoute));
 }
 

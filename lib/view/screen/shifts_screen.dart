@@ -16,12 +16,11 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
   void initState() {
     super.initState();
     _generateMonthDays();
-    // Scroll to today's date after a short delay
     WidgetsBinding.instance.addPostFrameCallback((_) {
       int todayIndex = DateTime.now().day - 1;
       if (todayIndex > 0 && _scrollController.hasClients) {
         _scrollController.animateTo(
-          todayIndex * 120.0, // rough estimate of item height
+          todayIndex * 120.0, 
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
@@ -31,26 +30,25 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
 
   String _getArabicDayName(int weekday) {
     switch (weekday) {
-      case 1: return "الإثنين";
-      case 2: return "الثلاثاء";
-      case 3: return "الأربعاء";
-      case 4: return "الخميس";
-      case 5: return "الجمعة";
-      case 6: return "السبت";
-      case 7: return "الأحد";
+      case 1: return "Monday";
+      case 2: return "Tuesday";
+      case 3: return "Wednesday";
+      case 4: return "Thursday";
+      case 5: return "Friday";
+      case 6: return "Saturday";
+      case 7: return "Sunday";
       default: return "";
     }
   }
 
   String _getMonthName(int month) {
-    List<String> months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+    List<String> months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return months[month - 1];
   }
 
   void _generateMonthDays() {
     DateTime now = DateTime.now();
     int lastDay = DateTime(now.year, now.month + 1, 0).day;
-    
     for (int i = 1; i <= lastDay; i++) {
       DateTime date = DateTime(now.year, now.month, i);
       monthDays.add({
@@ -110,7 +108,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
-        title: Text("جدول شهر $currentMonthName".tr, style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
+        title: Text("Schedule for $currentMonthName".tr, style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: cardColor,
         elevation: 0,

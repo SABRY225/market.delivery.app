@@ -23,7 +23,6 @@ class OrderController extends GetxController {
       if (response['orders'] != null) {
         orders.clear();
         orders.addAll(response['orders']);
-        
         _calculateActiveOrders();
       } else {
         statusRequest = StatusRequest.failure;
@@ -31,7 +30,6 @@ class OrderController extends GetxController {
     } else {
       Get.snackbar("Error".tr, "Failed to retrieve updated data".tr);
     }
-    
     update();
   }
 
@@ -63,15 +61,14 @@ class OrderController extends GetxController {
         "id": mockOrder.id,
         "type": "delivery",
         "total": mockOrder.price,
-        "status": "جديد",
+        "status": "New",
         "createdAt": "2026-05-22",
-        "city": {"name": "عمان"},
+        "city": {"name": "Amman"},
         "items": [
           {"name": mockOrder.storeName},
         ],
       };
     }).toList();
-    
     _calculateActiveOrders(); 
     update();
   }

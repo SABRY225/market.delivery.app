@@ -14,16 +14,21 @@ class LocalStorage {
     required String name,
     required bool online,
     required String workingMode,
+    required String vehicleType,
   }) {
     prefs.setString('token', token);
     prefs.setString('email', email);
     prefs.setString('name', name);
     prefs.setString('workingMode', workingMode);
+    prefs.setString('vehicleType', vehicleType);
     prefs.setInt('userId', userId);
     prefs.setBool('online', online);
   }
 static Future<bool> setWorkingMode(String workingMode) async {
     return await prefs.setString('workingMode', workingMode);
+  }
+  static Future<bool> setVehicleType(String vehicleType) async {
+    return await prefs.setString('vehicleType', vehicleType);
   }
   static void setPointAndOrders({
     required String points,
@@ -38,6 +43,7 @@ static Future<bool> setWorkingMode(String workingMode) async {
   static String? getName() => prefs.getString('name');
   static String? getPoints() => prefs.getString('points');
   static String? getWorkingMode() => prefs.getString('workingMode');
+  static String? getVehicleType() => prefs.getString('vehicleType');
   static String? getOrderCounter() => prefs.getString('orderCounter');
   static int? getUserId() => prefs.getInt('userId');
   static bool? getOnline() => prefs.getBool('online');
@@ -60,7 +66,6 @@ static Future<bool> setWorkingMode(String workingMode) async {
   static List<String> get(String key) {
     return prefs.getStringList(key) ?? [];
   }
-  
 
   static void clear() {
     prefs.clear();

@@ -16,6 +16,7 @@ import 'view/screen/breakSelection_screen.dart';
 import 'view/screen/shifts_screen.dart';
 import 'view/screen/opportunities_screen.dart';
 import 'view/screen/settings_screen.dart';
+import 'view/screen/trip_details_screen.dart';
 
 class AppRoutes {
   static const String login = "/login";
@@ -37,6 +38,8 @@ class AppRoutes {
   static const String opportunities = "/opportunities";
   static const String settings = "/settings";
 
+  static const String tripDetails = "/trip-details";
+
   static Map<String, Widget Function(BuildContext)> routes = {
     login: (context) => const LoginScreen(),
     home: (context) => const HomeScreen(),
@@ -53,6 +56,7 @@ class AppRoutes {
     wallet: (context) => const DeliveryWalletScreen(),
     idscan: (context) => HumanVerificationScreen(),
     detailesOrder: (context) => OrderDetailsScreen(),
+    tripDetails: (context) => const TripDetailsScreen(),
     shifts: (context) => const ShiftsScreen(),
     opportunities: (context) => const OpportunitiesScreen(),
   };

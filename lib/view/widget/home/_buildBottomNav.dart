@@ -35,7 +35,6 @@ Widget buildBottomNav(BuildContext context, int currentTabsIndex) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            // 1. أيقونة الطلبات الجاهزة
             _buildNavItem(
               index: 0,
               currentIndex: currentTabsIndex,
@@ -48,7 +47,6 @@ Widget buildBottomNav(BuildContext context, int currentTabsIndex) {
               onTap: () => Get.toNamed(AppRoutes.home),
             ),
 
-            // 2. أيقونة الطلبات الحالية
             _buildNavItem(
               index: 1,
               currentIndex: currentTabsIndex,
@@ -61,7 +59,6 @@ Widget buildBottomNav(BuildContext context, int currentTabsIndex) {
               onTap: () => Get.toNamed(AppRoutes.orders),
             ),
 
-            // 3. أيقونة الحساب الشخصي
             _buildNavItem(
               index: 2,
               currentIndex: currentTabsIndex,

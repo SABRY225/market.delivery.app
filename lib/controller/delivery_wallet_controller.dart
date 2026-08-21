@@ -12,7 +12,6 @@ class DeliveryWalletController extends GetxController {
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters للوصول المباشر من الواجهة
   double get receivedCustody => _receivedCustody;
   List<OrderWeeletModel> get ordersLog => _ordersLog;
   bool get isLoading => _isLoading;
@@ -20,7 +19,6 @@ class DeliveryWalletController extends GetxController {
 
   int get totalOrdersCount => _ordersLog.length;
 
-  // حساب إجمالي التكاليف بأمان
   double get totalPaidToRestaurants {
     return _ordersLog.fold(
       0.0,
@@ -28,7 +26,6 @@ class DeliveryWalletController extends GetxController {
     );
   }
 
-  // المبلغ المطلوب توريده
   double get amountToHandOver => _receivedCustody - totalPaidToRestaurants;
 
   @override
@@ -37,7 +34,6 @@ class DeliveryWalletController extends GetxController {
     fetchWalletData();
   }
 
-  // جلب البيانات مع التعامل مع أخطاء السيرفر والشبكة
   Future<void> fetchWalletData() async {
     _isLoading = true;
     _errorMessage = null;
@@ -65,10 +61,10 @@ class DeliveryWalletController extends GetxController {
           _ordersLog = [];
         }
       } else {
-        _errorMessage = 'فشل جلب البيانات من السيرفر (رمز: ${response.statusCode})';
+        _errorMessage = 'Server data fetch failed: ${response.statusCode}';
       }
     } catch (e) {
-      _errorMessage = 'تعذر الاتصال بالشبكة، تم إدراج بيانات مؤقتة.';
+      _errorMessage = 'Network error, temp data added.';
     } finally {
       _isLoading = false;
       update();

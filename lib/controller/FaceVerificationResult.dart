@@ -21,7 +21,6 @@ class FaceVerificationController extends GetxController {
     super.onInit();
   }
 
-  // 1. تهيئة الكاميرا الأمامية
   Future<void> initFrontCamera() async {
     try {
       final cameras = await availableCameras();
@@ -40,14 +39,13 @@ class FaceVerificationController extends GetxController {
       isCameraInitialized = true;
       update();
     } catch (e) {
-      Get.snackbar('خطأ', 'حدث خطأ أثناء تهيئة الكاميرا: $e');
+      Get.snackbar('Error', 'Camera initialization error: $e');
     }
   }
 
-  // 2. التقاط صورة الوجه وإرسالها لإثبات البصرية
   Future<void> processVerification() async {
     if (cameraController == null || !cameraController!.value.isInitialized) {
-      Get.snackbar('تنبيـه', 'الكاميرا غير جاهزة بعد');
+      Get.snackbar('Alert', 'Camera not ready yet');
       return;
     }
 
@@ -57,21 +55,15 @@ class FaceVerificationController extends GetxController {
     update();
 
     try {
-      // التقاط صورة الوجه الحالية
       final image = await cameraController!.takePicture();
 
-      // تجهيز الـ Multipart Request
       final request = http.MultipartRequest('POST', Uri.parse(AppLink.verifyHuman));
-      
-      // إرسال معرف المستخدم
       request.fields['userId'] = LocalStorage.getUserId().toString();
 
-      // إرسال صورة واحدة باسم 'photo' ليتطابق مع req.file و upload.single('photo')
       request.files.add(
         await http.MultipartFile.fromPath('photo', image.path),
       );
 
-      // إرسال الطلب
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
@@ -79,10 +71,10 @@ class FaceVerificationController extends GetxController {
         statusRequest = StatusRequest.success;
         final data = jsonDecode(response.body);
         final bool isSuccess = data['success'] ?? false;
-        final String message = data['message'] ?? 'تم التحقق بنجاح';
+        final String message = data['message'] ?? 'Verified successfully';
 
         showResultDialog(
-          title: isSuccess ? 'تم التثبت بنجاح ✅' : 'فشل التحقق ❌',
+          title: isSuccess ? 'Verification successful ✅' : 'Verification failed ❌',
           content: message,
           isSuccess: isSuccess,
         );
@@ -90,10 +82,10 @@ class FaceVerificationController extends GetxController {
       } else {
         statusRequest = StatusRequest.serverfailure;
         final errorData = jsonDecode(response.body);
-        final String errorMessage = errorData['message'] ?? 'تعذر معالجة الطلب';
+        final String errorMessage = errorData['message'] ?? 'Could not process order';
 
         showResultDialog(
-          title: 'لم نتمكن من التعرف على وجه',
+          title: 'Face not recognized',
           content: errorMessage,
           isSuccess: false,
         );
@@ -101,8 +93,8 @@ class FaceVerificationController extends GetxController {
     } catch (e) {
       statusRequest = StatusRequest.offlinefailure;
       showResultDialog(
-        title: 'خطأ في الاتصال',
-        content: 'تأكد من الاتصال بالسيرفر وأعد المحاولة.',
+        title: 'Connection error',
+        content: 'Check server connection and retry.',
         isSuccess: false,
       );
     } finally {
@@ -111,7 +103,6 @@ class FaceVerificationController extends GetxController {
     }
   }
 
-  // 3. عرض النتيجة للمستخدم
   void showResultDialog({
     required String title,
     required String content,
@@ -123,12 +114,12 @@ class FaceVerificationController extends GetxController {
       barrierDismissible: false,
       confirm: TextButton(
         onPressed: () {
-          Get.back(); // إغلاق الـ Dialog
+          Get.back(); 
           if (isSuccess) {
-            Get.until((route) => route.isFirst); // العودة للشاشة الرئيسية
+            Get.until((route) => route.isFirst); 
           }
         },
-        child: const Text('موافق'),
+        child: const Text('OK'),
       ),
     );
   }

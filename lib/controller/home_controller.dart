@@ -16,13 +16,10 @@ class HomeController extends GetxController {
   bool hasInternet = true;
   StreamSubscription? _connectivitySubscription;
 
-  // 👇 القوائم بقت 3 بدل 2، مطابقة لرد السيرفر الجديد:
-  // data.orders / data.myTrips (رحلات مقبولة بالفعل) / data.nearbyTrips (رحلات متاحة للقبول)
   List ordersList = [];
   List myTripsList = [];
   List nearbyTripsList = [];
 
-  // 👇 التبويب الفعّال حالياً في اللوحة السفلية: 0 = طلبات، 1 = رحلاتي، 2 = رحلات قريبة
   int selectedTab = 0;
 
   Map driverData = {};
@@ -42,6 +39,8 @@ class HomeController extends GetxController {
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
 
+  Timer? _refreshTimer;
+
   @override
   void onInit() {
     homeData = HomeData(Get.find());
@@ -50,6 +49,9 @@ class HomeController extends GetxController {
     startLiveLocationTracking();
     _checkInitialInternet();
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+    _refreshTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      getDriverOrders(isSilent: true);
+    });
     super.onInit();
   }
 
@@ -63,7 +65,6 @@ class HomeController extends GetxController {
         result == ConnectivityResult.mobile || 
         result == ConnectivityResult.wifi || 
         result == ConnectivityResult.ethernet);
-    
     if (hasInternet != hasConnection) {
       hasInternet = hasConnection;
       update();
@@ -94,6 +95,11 @@ class HomeController extends GetxController {
             updateDriverMarkerOnMap();
             if (currentSelectedCustomerLocation != null) {
               drawRoute();
+            }
+            for (var trip in myTripsList) {
+              if (trip["status"] == "in_progress") {
+                homeData.trackingTrip(trip["id"].toString(), position.latitude, position.longitude);
+              }
             }
             update();
           },
@@ -157,7 +163,6 @@ Future<void> drawRoute() async {
     print("route error: $e");
   }
 
-  // fallback لو فشل الاتصال بسيرفر التوجيه: نرجع لخط مستقيم مؤقت
   polylines
     ..clear()
     ..add(
@@ -186,53 +191,66 @@ Future<void> drawRoute() async {
     String? driverName = LocalStorage.getName();
     int? driverId = LocalStorage.getUserId();
     String? workingMode = LocalStorage.getWorkingMode();
+    String? vehicleType = LocalStorage.getVehicleType();
+    print("vehicleType: $vehicleType");
     driverData = {
       "id": driverId ?? 0,
       "name": driverName ?? "Captain",
       "working_mode": workingMode ?? "all",
+      "vehicleType": vehicleType ?? "",
     };
     isAvailable = LocalStorage.getOnline() ?? true;
     update();
   }
 
-  // 👇 معدّلة بالكامل عشان تتوافق مع رد getDeliveryOrders الجديد:
-  // { workingMode, ordersCount, myTripsCount, nearbyTripsCount,
-  //   data: { orders: [...], myTrips: [...], nearbyTrips: [...] } }
-  Future<void> getDriverOrders() async {
-    ordersList.clear();
-    myTripsList.clear();
-    nearbyTripsList.clear();
-    markers.clear();
-    polylines.clear();
-    statusRequest = StatusRequest.loading;
-    update();
+  Future<void> getDriverOrders({bool isSilent = false}) async {
+    if (!isSilent) {
+      statusRequest = StatusRequest.loading;
+      update();
+    }
 
     dynamic response = await homeData.getDriverOrders(driverData["id"]);
-    statusRequest = handlingData(response);
-    print("response: $response");
+    var reqStatus = handlingData(response);
 
-    if (statusRequest == StatusRequest.success) {
-      // 1. تحديث workingMode إذا جاء في الرد
+    if (reqStatus == StatusRequest.success) {
       if (response['workingMode'] != null) {
         driverData["working_mode"] = response['workingMode'];
       }
 
       final rawData = response['data'];
 
-      // 2. التحقق من شكل data (سواء كانت Map بها orders/myTrips/nearbyTrips أو List مباشرة)
+      ordersList.clear();
       if (rawData is Map) {
         final List orders = rawData['orders'] ?? [];
-        final List myTrips = rawData['myTrips'] ?? [];
-        final List nearbyTrips = rawData['nearbyTrips'] ?? [];
         ordersList.addAll(orders);
-        myTripsList.addAll(myTrips);
-        nearbyTripsList.addAll(nearbyTrips);
       } else if (rawData is List) {
-        // إذا كان السيرفر برجع المصفوفة مباشرة في data
         ordersList.addAll(rawData);
       }
+    }
 
-      // 3. إضافة ماركرات طلبات الدليفري
+    dynamic nearbyResponse = await homeData.getNearbyTrips(driverData["vehicleType"]?.toString() ?? "");
+    if (handlingData(nearbyResponse) == StatusRequest.success) {
+      final data = nearbyResponse['data'];
+      if (data is List) {
+        nearbyTripsList.clear();
+        nearbyTripsList.addAll(data);
+      }
+    }
+
+    dynamic myTripsResponse = await homeData.getMyTrips();
+    if (myTripsResponse['success'] == true) {
+      final data = myTripsResponse['data'];
+      if (data is List) {
+        myTripsList.clear();
+        myTripsList.addAll(data);
+      }
+    }
+
+    if (reqStatus == StatusRequest.success || handlingData(nearbyResponse) == StatusRequest.success || handlingData(myTripsResponse) == StatusRequest.success) {
+      if (!isSilent) statusRequest = StatusRequest.success;
+
+      markers.removeWhere((m) => m.markerId.value.startsWith('order_') || m.markerId.value.startsWith('trip_'));
+
       for (var order in ordersList) {
         if (order["latitude"] != null && order["longitude"] != null) {
           addOrderMarker(
@@ -244,7 +262,6 @@ Future<void> drawRoute() async {
         }
       }
 
-      // 4. إضافة ماركرات رحلاتي المقبولة (myTrips)
       for (var trip in myTripsList) {
         if (trip["pickupLat"] != null && trip["pickupLng"] != null) {
           addOrderMarker(
@@ -256,7 +273,6 @@ Future<void> drawRoute() async {
         }
       }
 
-      // 5. إضافة ماركرات الرحلات القريبة المتاحة للقبول (nearbyTrips)
       for (var trip in nearbyTripsList) {
         if (trip["pickupLat"] != null && trip["pickupLng"] != null) {
           addOrderMarker(
@@ -269,6 +285,8 @@ Future<void> drawRoute() async {
       }
 
       updateDriverMarkerOnMap();
+    } else {
+      if (!isSilent) statusRequest = reqStatus;
     }
 
     update();
@@ -289,24 +307,22 @@ Future<void> drawRoute() async {
     if (statusRequest == StatusRequest.success) {
       if (response['status'] == 'success') {
         Get.rawSnackbar(
-          message: "تم قبول الرحلة بنجاح",
+          message: "Trip accepted successfully",
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 2),
         );
 
-        // Refresh driver orders and trips lists after successful application
-        // (the trip should move from nearbyTrips to myTrips on the server)
         await getDriverOrders();
       } else {
         Get.rawSnackbar(
-          message: response['message'] ?? "عذراً، الرحلة لم تعد متاحة",
+          message: response['message'] ?? "Sorry, trip no longer available",
           backgroundColor: Colors.orange,
           duration: const Duration(seconds: 2),
         );
       }
     } else {
       Get.rawSnackbar(
-        message: "حدث خطأ أثناء التواصل مع السيرفر",
+        message: "Error communicating with server",
         backgroundColor: Colors.red,
         duration: const Duration(seconds: 2),
       );
@@ -315,7 +331,63 @@ Future<void> drawRoute() async {
     update();
   }
 
-  // 👇 بقت تفرّق بين ماركر طلب دليفري وماركر رحلة ركاب بالأيقونة والمفتاح
+  Future<void> arriveTrip(String tripId) async {
+    statusRequest = StatusRequest.loading;
+    update();
+
+    dynamic response = await homeData.arriveTrip(tripId);
+    statusRequest = handlingData(response);
+    if (statusRequest == StatusRequest.success) {
+      if (response['success'] == true) {
+        Get.rawSnackbar(message: "Arrival recorded successfully", backgroundColor: Colors.green, duration: const Duration(seconds: 2));
+        await getDriverOrders();
+      } else {
+        Get.rawSnackbar(message: response['message'] ?? "Error occurred", backgroundColor: Colors.orange, duration: const Duration(seconds: 2));
+      }
+    } else {
+      Get.rawSnackbar(message: "Error communicating with server", backgroundColor: Colors.red, duration: const Duration(seconds: 2));
+    }
+    update();
+  }
+
+  Future<void> startTripAction(String tripId) async {
+    statusRequest = StatusRequest.loading;
+    update();
+
+    dynamic response = await homeData.startTrip(tripId);
+    statusRequest = handlingData(response);
+    if (statusRequest == StatusRequest.success) {
+      if (response['success'] == true) {
+        Get.rawSnackbar(message: "Trip started successfully", backgroundColor: Colors.green, duration: const Duration(seconds: 2));
+        await getDriverOrders();
+      } else {
+        Get.rawSnackbar(message: response['message'] ?? "Error occurred", backgroundColor: Colors.orange, duration: const Duration(seconds: 2));
+      }
+    } else {
+      Get.rawSnackbar(message: "Error communicating with server", backgroundColor: Colors.red, duration: const Duration(seconds: 2));
+    }
+    update();
+  }
+
+  Future<void> completeTripAction(String tripId) async {
+    statusRequest = StatusRequest.loading;
+    update();
+
+    dynamic response = await homeData.completeTrip(tripId);
+    statusRequest = handlingData(response);
+    if (statusRequest == StatusRequest.success) {
+      if (response['success'] == true) {
+        Get.rawSnackbar(message: "Trip ended successfully", backgroundColor: Colors.green, duration: const Duration(seconds: 2));
+        await getDriverOrders();
+      } else {
+        Get.rawSnackbar(message: response['message'] ?? "Error occurred", backgroundColor: Colors.orange, duration: const Duration(seconds: 2));
+      }
+    } else {
+      Get.rawSnackbar(message: "Error communicating with server", backgroundColor: Colors.red, duration: const Duration(seconds: 2));
+    }
+    update();
+  }
+
   void addOrderMarker(
     double lat,
     double lng,
@@ -335,35 +407,30 @@ Future<void> drawRoute() async {
   }
 
   Future<void> updateWorkingMode(String mode) async {
-    // 1. إظهار مؤشر التحميل
     statusRequest = StatusRequest.loading;
     update();
-    // 2. إرسال طلب التحديث للسيرفر
     dynamic response = await homeData.updateWorkingMode(driverData["id"], mode);
     statusRequest = handlingData(response);
 
     if (statusRequest == StatusRequest.success) {
-      // 3. التحديث في الذاكرة الحية للكونترولر
       driverData["working_mode"] = mode;
 
-      // 4. الحفظ محلياً في SharedPreferences عبر LocalStorage
       await LocalStorage.setWorkingMode(mode);
 
       String modeName = mode == "all"
-          ? "جميع الخدمات"
-          : (mode == "delivery" ? "خدمات التوصيل فقط" : "خدمات الركوب فقط");
+          ? "All Services"
+          : (mode == "delivery" ? "Delivery only" : "Rides only");
 
       Get.rawSnackbar(
-        message: "تم تغيير نمط العمل إلى: $modeName",
+        message: "Work mode changed to: $modeName",
         backgroundColor: const Color(0xFFFF5722),
         duration: const Duration(seconds: 2),
       );
 
-      // 5. إعادة جلب الطلبات/الرحلات للتوافق مع المود الجديد
       await getDriverOrders();
     } else {
       Get.rawSnackbar(
-        message: "فشل في تغيير نمط العمل، يرجى المحاولة لاحقاً",
+        message: "Failed to change work mode",
         backgroundColor: Colors.red,
         duration: const Duration(seconds: 2),
       );
@@ -371,7 +438,6 @@ Future<void> drawRoute() async {
     }
   }
 
-  // 👇 تبديل التبويب النشط في اللوحة السفلية (طلبات / رحلاتي / رحلات قريبة)
   void switchTab(int index) {
     if (selectedTab == index) return;
     selectedTab = index;
@@ -380,6 +446,7 @@ Future<void> drawRoute() async {
 
   @override
   void onClose() {
+    _refreshTimer?.cancel();
     positionStream?.cancel();
     mapController?.dispose();
     _connectivitySubscription?.cancel();

@@ -36,17 +36,14 @@ class SettingsLanguageScreen extends StatelessWidget {
               style: TextStyle(color: iconColor, fontSize: 14, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 25),
-            
             _buildLanguageCard(
-              title: "العربية",
+              title: "Arabic",
               subtitle: "Arabic",
               flag: "🇪🇬",
               isSelected: Get.locale?.languageCode == 'ar',
               onTap: () => controller.changeLang("ar"),
             ),
-            
             const SizedBox(height: 15),
-            
             _buildLanguageCard(
               title: "English",
               subtitle: "English",

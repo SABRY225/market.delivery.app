@@ -12,7 +12,6 @@ import 'package:url_launcher/url_launcher.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  // لوحة الألوان الهوية البصرية
   static Color get primaryColor => const Color(0xFFFF5722);
   static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF0F172A);
   static Color get subtitleColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);
@@ -24,7 +23,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.lazyPut(() => Crud());
     final HomeController controller = Get.put(HomeController());
-    Get.put(SettingsController()); // تأكد من تهيئة متحكم الإعدادات للاستماع للتغييرات
+    Get.put(SettingsController()); 
 
     return GetBuilder<SettingsController>(
       builder: (settings) {
@@ -140,8 +139,8 @@ class HomeScreen extends StatelessWidget {
                                           const SizedBox(width: 6),
                                           Text(
                                             controller.isAvailable
-                                                ? "يعمل (متصل)"
-                                                : "لا يعمل",
+                                                ? "Online"
+                                                : "Offline",
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 11,
@@ -154,7 +153,7 @@ class HomeScreen extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                            "لا يعمل (جاري الاتصال)",
+                                            "Offline (Connecting)",
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 11,
@@ -249,7 +248,7 @@ class HomeScreen extends StatelessWidget {
                           if (await canLaunchUrl(phoneUri)) {
                             await launchUrl(phoneUri);
                           } else {
-                            Get.snackbar("خطأ", "لا يمكن إجراء الاتصال من هذا الجهاز");
+                            Get.snackbar("Error", "Cannot make call from this device");
                           }
                         },
                       ),
@@ -419,7 +418,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
-              // لوحة العرض السفلية المنزلقة، مقسّمة لتبويب "طلبات" و"رحلاتي" و"رحلات قريبة"
               DraggableScrollableSheet(
                 initialChildSize: 0.35,
                 minChildSize: 0.15,
@@ -452,7 +450,6 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // 👇 تبويب الاختيار بين طلبات الدليفري / رحلاتي المقبولة / رحلات قريبة متاحة
                         _buildOrdersTripsTabSelector(controller),
                         const SizedBox(height: 16),
                         Expanded(
@@ -475,7 +472,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 👇 شريط تبويب "طلبات توصيل" / "رحلاتي" / "رحلات قريبة" مع عداد لكل نوع
   Widget _buildOrdersTripsTabSelector(HomeController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -583,44 +579,59 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 👇 معدّلة: تعرض قائمة الطلبات أو رحلاتي أو الرحلات القريبة حسب التبويب المختار
   Widget _buildApiBodyState(
     HomeController controller,
     ScrollController scrollController,
   ) {
+    Widget content;
+
     if (controller.statusRequest == StatusRequest.loading) {
-      return Center(
+      content = Center(
         child: CircularProgressIndicator(color: primaryColor),
       );
     } else if (controller.statusRequest == StatusRequest.failure) {
-      return _buildEmptyOrdersWidget(tab: controller.selectedTab);
+      content = SingleChildScrollView(
+        controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: 300,
+          child: _buildEmptyOrdersWidget(tab: controller.selectedTab),
+        ),
+      );
     } else if (controller.statusRequest == StatusRequest.serverfailure ||
         controller.statusRequest == StatusRequest.offlinefailure) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.wifi_off_rounded,
-              color: subtitleColor,
-              size: 48,
+      content = SingleChildScrollView(
+        controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: 300,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.wifi_off_rounded,
+                  color: subtitleColor,
+                  size: 48,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Check your internet connection".tr,
+                  style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => controller.getDriverOrders(),
+                  child: Text(
+                    "Retry".tr,
+                    style: TextStyle(color: primaryColor),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              "تأكد من اتصالك بالإنترنت".tr,
-              style: TextStyle(
-                color: textColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            TextButton(
-              onPressed: () => controller.getDriverOrders(),
-              child: Text(
-                "إعادة المحاولة".tr,
-                style: TextStyle(color: primaryColor),
-              ),
-            ),
-          ],
+          ),
         ),
       );
     } else {
@@ -631,27 +642,41 @@ class HomeScreen extends StatelessWidget {
               : controller.nearbyTripsList);
 
       if (currentList.isEmpty) {
-        return _buildEmptyOrdersWidget(tab: controller.selectedTab);
+        content = SingleChildScrollView(
+          controller: scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: 300,
+            child: _buildEmptyOrdersWidget(tab: controller.selectedTab),
+          ),
+        );
+      } else {
+        content = ListView.builder(
+          controller: scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 24),
+          itemCount: currentList.length,
+          itemBuilder: (context, index) {
+            if (controller.selectedTab == 0) {
+              return _buildOrderCard(currentList[index], controller);
+            } else {
+              return _buildTripCard(
+                currentList[index],
+                controller,
+                isMyTrip: controller.selectedTab == 1,
+              );
+            }
+          },
+        );
       }
-
-      return ListView.builder(
-        controller: scrollController,
-        padding: const EdgeInsets.only(bottom: 24),
-        itemCount: currentList.length,
-        itemBuilder: (context, index) {
-          if (controller.selectedTab == 0) {
-            return _buildOrderCard(currentList[index], controller);
-          }
-          // رحلاتي (مقبولة بالفعل) لا تحتاج زر قبول، فقط تتبّع
-          // الرحلات القريبة تحتاج زر قبول (applyForTrip)
-          return _buildTripCard(
-            currentList[index],
-            controller,
-            isMyTrip: controller.selectedTab == 1,
-          );
-        },
-      );
     }
+
+    return RefreshIndicator(
+      color: primaryColor,
+      backgroundColor: cardColor,
+      onRefresh: () => controller.getDriverOrders(),
+      child: content,
+    );
   }
 
   Widget _buildDrawerItem(
@@ -783,8 +808,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 👇 كارد طلب دليفري بالحقول الراجعة فعلياً من getDeliveryOrders
-  // (id, customer, phone, latitude, longitude, payment, deliveryFee, items, total)
   Widget _buildOrderCard(Map order, HomeController controller) {
     double lat =
         double.tryParse((order["latitude"] ?? 27.2579).toString()) ??
@@ -811,30 +834,34 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.moped_rounded,
-                    color: primaryColor,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "${"Request number #".tr} ${order["id"]}",
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.moped_rounded,
+                      color: primaryColor,
+                      size: 20,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "${"Request number #".tr} ${order["id"]}",
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -858,7 +885,6 @@ class HomeScreen extends StatelessWidget {
           ),
           Divider(height: 24, color: Color(0xFFF1F5F9), thickness: 1.2),
 
-          // بيانات العميل (الاسم والهاتف) + الملاحة لموقعه
           InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
@@ -929,7 +955,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // اسم المطعم/المتجر (أول عنصر في items) + عدد العناصر
           if (vendorName != null) ...[
             const SizedBox(height: 6),
             Row(
@@ -1038,11 +1063,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 👇 كارد رحلة نقل ركاب بالحقول الراجعة فعلياً من getDeliveryOrders
-  // (id, status, pickupLat/Lng, pickupAddress, dropoffLat/Lng, dropoffAddress,
-  //  fareAmount, distanceKm, paymentMethod)
-  // isMyTrip = true  → رحلة مقبولة بالفعل (myTrips): تعرض الحالة وزر تتبّع بدل القبول
-  // isMyTrip = false → رحلة قريبة متاحة (nearbyTrips): تعرض زر قبول الرحلة
   Widget _buildTripCard(
     Map trip,
     HomeController controller, {
@@ -1065,8 +1085,13 @@ class HomeScreen extends StatelessWidget {
         "${trip["calculatedDistanceKm"] ?? trip["distanceKm"] ?? '-'} ${"km".tr}";
     final String? status = trip["status"]?.toString();
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+    return InkWell(
+      onTap: () {
+        Get.toNamed(AppRoutes.tripDetails, arguments: {"tripId": trip["id"]});
+      },
+      borderRadius: BorderRadius.circular(24),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: cardColor,
@@ -1086,23 +1111,28 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.local_taxi_rounded,
-                    color: primaryColor,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "${"ride_request_label".tr} #${trip["id"]}",
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.local_taxi_rounded,
+                      color: primaryColor,
+                      size: 20,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "${"ride_request_label".tr} #${trip["id"]}",
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Row(
                 children: [
@@ -1151,7 +1181,6 @@ class HomeScreen extends StatelessWidget {
           ),
           Divider(height: 24, color: Color(0xFFF1F5F9), thickness: 1.2),
 
-          // نقطة الانطلاق (Pickup)
           InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
@@ -1225,7 +1254,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // وجهة الوصول (Dropoff)
           InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
@@ -1321,12 +1349,20 @@ class HomeScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (isMyTrip) {
-                      // رحلة مقبولة بالفعل: نوجّه للملاحة نحو العميل بدل زر القبول
-                      controller.animateAndSelectCustomer(
-                        pickupLat,
-                        pickupLng,
-                      );
-                      _showNavigationSnackbar(trip["id"]);
+                      String? status = trip["status"];
+                      if (status == 'accepted') {
+                        controller.arriveTrip(trip["id"].toString());
+                      } else if (status == 'driver_arrived') {
+                        controller.startTripAction(trip["id"].toString());
+                      } else if (status == 'in_progress') {
+                        controller.completeTripAction(trip["id"].toString());
+                      } else {
+                        controller.animateAndSelectCustomer(
+                          pickupLat,
+                          pickupLng,
+                        );
+                        _showNavigationSnackbar(trip["id"]);
+                      }
                     } else {
                       controller.applyForTrip(trip["id"].toString());
                     }
@@ -1341,7 +1377,11 @@ class HomeScreen extends StatelessWidget {
                     elevation: 0,
                   ),
                   child: Text(
-                    isMyTrip ? "start_navigation".tr : "accept_ride".tr,
+                    isMyTrip 
+                      ? (trip["status"] == 'accepted' ? "Check-in (I'm outside)".tr 
+                        : (trip["status"] == 'driver_arrived' ? "Start Trip".tr 
+                        : (trip["status"] == 'in_progress' ? "End Trip".tr : "start_navigation".tr)))
+                      : "accept_ride".tr,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -1352,6 +1392,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }
@@ -1367,14 +1408,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 👇 معدّلة: نص وأيقونة مختلفين حسب التبويب (طلبات / رحلاتي / رحلات قريبة)
   Widget _buildEmptyOrdersWidget({int tab = 0}) {
     final IconData icon = tab == 0
         ? Icons.moped_rounded
         : (tab == 1 ? Icons.local_taxi_rounded : Icons.travel_explore_rounded);
 
     final String message = tab == 1
-        ? "لا توجد رحلات مقبولة حالياً".tr
+        ? "No accepted trips currently".tr
         : "No requests are currently available".tr;
 
     return Center(
@@ -1440,7 +1480,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    controller.isAvailable ? "يعمل" : "لا يعمل",
+                    controller.isAvailable ? "Online" : "Offline",
                     style: TextStyle(
                       color: controller.isAvailable ? const Color(0xFF4CAF50) : const Color(0xFFFF9800),
                       fontSize: 14,
@@ -1453,7 +1493,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "لا يعمل (جاري الاتصال)",
+                    "Offline (Connecting)",
                     style: TextStyle(color: Color(0xFFFF9800), fontSize: 13, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(width: 8),

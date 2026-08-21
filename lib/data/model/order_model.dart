@@ -29,7 +29,7 @@ class OrderModel {
     return OrderModel(
       id: json['id'] as int?,
       customer: json['customer'] as String?,
-      phone: json['phone']?.toString(), // Safely handles numbers or strings
+      phone: json['phone']?.toString(), 
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       payment: json['payment'] as String?,

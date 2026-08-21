@@ -99,7 +99,6 @@ class ProfileScreen extends StatelessWidget {
                     _buildListTile(
                       icon: Icons.logout,
                       title: "logout".tr,
-                      // تم تصحيح الاسم هنا ليطابق المتغير الموجود في الدالة بالأسفل
                       customIconColor: const Color.fromARGB(255, 241, 234, 234),
                       onTap: () async {
                         LocalStorage.clear();
@@ -158,7 +157,7 @@ class ProfileScreen extends StatelessWidget {
           color: Color(0xFFCBD5E1),
           size: 14,
         ),
-        onTap: onTap, // تم إبقاء استدعاء واحد فقط هنا
+        onTap: onTap, 
       ),
     );
   }

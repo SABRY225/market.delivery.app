@@ -43,7 +43,7 @@ class StatisticsController extends GetxController {
         "customer": "Ahmed",
         "total": "1747.000",
         "commission": 1663,
-        "date": "٤ مارس ٢٠٢٦",
+        "date": "Mar 4, 2026",
         "time": "12:30 AM",
         "itemsCount": 0
       },
@@ -52,7 +52,7 @@ class StatisticsController extends GetxController {
         "customer": "Ahmed",
         "total": "1768.000",
         "commission": 1663,
-        "date": "٢١ فبراير ٢٠٢٦",
+        "date": "Feb 21, 2026",
         "time": "10:42 PM",
         "itemsCount": 0
       }

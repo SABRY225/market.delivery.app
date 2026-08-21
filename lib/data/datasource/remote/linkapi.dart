@@ -12,8 +12,10 @@ class AppLink {
   static const String walletInfo = "$server/delivery";
   static const String workingmode = "$server/delivery";
   static const String applytrip = "$server/delivery/trips";
+  static const String nearbyTrips = "$server/trips/nearby";
+  static const String myTrips = "$server/trips";
+  static const String tripBase = "$server/trips";
   static const String contact = "$server/customer-chat";
-  
   static const String shifts = "$server/delivery";
   static const String opportunities = "$server/delivery/opportunities/all";
   static const String acceptOpportunity = "$server/delivery/opportunities";

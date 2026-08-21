@@ -1,5 +1,5 @@
 import 'package:delivery/core/services/local_storage.dart';
-import 'package:firebase_messaging/firebase_messaging.dart'; // تأكد من الاستيراد
+import 'package:firebase_messaging/firebase_messaging.dart'; 
 import '../../../routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,32 +31,24 @@ Future<void> login() async {
     Get.snackbar("alert".tr, "Please enter your password.".tr);
     return;
   }
-  
   statusRequest = StatusRequest.loading;
   update();
-  
-  // 1. جلب توكن الفايربيز الحقيقي الخاص بالجهاز هنا
   String? fcmToken;
   try {
     fcmToken = await FirebaseMessaging.instance.getToken();
     print("FCM Token Retrieved: $fcmToken");
   } catch (e) {
     print("Error getting FCM Token: $e");
-    // يمكنك إما إيقاف العملية أو السماح بالدخول بدون إشعارات حسب رغبتك
   }
-  
-  // 2. تمرير الـ fcmToken إلى دالة البوست (تأكد من تعديل ملف LoginData كما في الخطوة القادمة)
   dynamic response = await loginData.postData(phone.text, password.text, fcmToken);
   statusRequest = handlingData(response);
 
   if (StatusRequest.success == statusRequest) {
     print("Login successful: $response");
-    // حفظ بيانات المستخدم محلياً
     int pUserId = 0;
     if (response['user']['id'] != null) {
       pUserId = int.tryParse(response['user']['id'].toString()) ?? 0;
     }
-    
     bool pOnline = false;
     if (response['user']['online'] != null) {
       if (response['user']['online'] is bool) {
@@ -67,12 +59,13 @@ Future<void> login() async {
     }
 
     String pToken = response['token']?.toString() ?? '';
-
+    print("vehicleType: ${response['user']?['vehicleType']?.toString()}");
     LocalStorage.setUser(
       token: pToken,
       email: response['user']['email']?.toString() ?? '',
       name: response['user']['name']?.toString() ?? '',
       workingMode: response['user']['workingMode']?.toString() ?? '',
+      vehicleType: response['user']['vehicleType']?.toString() ?? '',
       userId: pUserId,
       online: pOnline,
     );

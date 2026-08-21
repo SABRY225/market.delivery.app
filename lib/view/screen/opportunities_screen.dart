@@ -87,7 +87,6 @@ class OpportunitiesScreen extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // شريط زينة جانبي ليعطي طابع أنيق
           Positioned(
             right: 0,
             top: 0,
@@ -153,7 +152,6 @@ class OpportunitiesScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                 ],
-                // معلومات الوقت والتاريخ والعائد المالي
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(

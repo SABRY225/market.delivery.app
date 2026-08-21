@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 class OrderDetailsController extends GetxController {
   var isLoading = false.obs;
   OrderController orderController = Get.put(OrderController());
-  
   Future<bool> cancelOrder(String orderId, String reason) async {
     try {
       isLoading.value = true;
@@ -49,7 +48,6 @@ class OrderDetailsController extends GetxController {
     }
   }
 
-  // دالة تسليم الطلب
   Future<bool> deliverOrder(String orderId) async {
     try {
       isLoading.value = true;

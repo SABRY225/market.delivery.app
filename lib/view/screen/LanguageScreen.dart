@@ -68,13 +68,13 @@ class LanguageScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "اختر اللغة المناسبة للتطبيق",
+                    "Choose app language",
                     style: TextStyle(color: iconColor, fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 50),
                   _buildModernButton(
-                    title: "العربية",
-                    subtitle: "اللغة العربية",
+                    title: "Arabic",
+                    subtitle: "Arabic Language",
                     flag: "🇪🇬",
                     onPressed: () => controller.changeLang("ar"),
                   ),

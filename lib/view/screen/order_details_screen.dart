@@ -13,7 +13,6 @@ class OrderDetailsScreen extends StatelessWidget {
   static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
   static Color get cardColor => Get.isDarkMode ? const Color(0xFF1E293B) : Colors.white;
 
-  // دالة لإجراء الاتصال بالعميل
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
       scheme: 'tel',
@@ -23,8 +22,8 @@ class OrderDetailsScreen extends StatelessWidget {
       await launchUrl(launchUri);
     } else {
       Get.snackbar(
-        "خطأ".tr,
-        "تعذر إجراء الاتصال بالرقم $phoneNumber",
+        "Error".tr,
+        "Could not call $phoneNumber",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
@@ -57,25 +56,23 @@ class OrderDetailsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         children: [
-          // بطاقة العميل مع زر الاتصال السريع
           _buildCustomerCard(order, phone),
 
           const SizedBox(height: 16),
 
-          // بطاقة تفاصيل الوقت والتاريخ
           _sectionCard(
-            title: "تفاصيل الموعد".tr,
+            title: "Appointment Details".tr,
             child: Column(
               children: [
                 _infoRow(
                   Icons.access_time_rounded,
-                  "وقت التسليم المتوقع".tr,
+                  "Expected delivery time".tr,
                   "${order["deliveryTime"] ?? '-'}",
                 ),
                 Divider(height: 16, color: Color(0xFFF1F5F9)),
                 _infoRow(
                   Icons.calendar_today_outlined,
-                  "تاريخ الطلب".tr,
+                  "Order Date".tr,
                   "${order["date"] ?? '-'}",
                 ),
               ],
@@ -84,9 +81,8 @@ class OrderDetailsScreen extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // بطاقة المنتجات
           _sectionCard(
-            title: "${"المنتجات".tr} (${items.length})",
+            title: "${"Products".tr} (${items.length})",
             child: Column(
               children: items.asMap().entries.map<Widget>((entry) {
                 final index = entry.key;
@@ -104,17 +100,16 @@ class OrderDetailsScreen extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // ملخص الدفع
           _sectionCard(
-            title: "ملخص الدفع".tr,
+            title: "Payment Summary".tr,
             child: Column(
               children: [
                 _summaryRow(
-                  "طريقة الدفع".tr,
+                  "Payment Method".tr,
                   "${order["payment"] ?? '-'}",
                 ),
                 _summaryRow(
-                  "رسوم التوصيل".tr,
+                  "Delivery Fee".tr,
                   "${order["deliveryFee"] ?? 0} ${"egp".tr}",
                 ),
                 Padding(
@@ -122,7 +117,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   child: Divider(color: Color(0xFFE2E8F0)),
                 ),
                 _summaryRow(
-                  "الإجمالي".tr,
+                  "Total".tr,
                   "${order["total"] ?? 0} ${"egp".tr}",
                   isBold: true,
                 ),
@@ -130,11 +125,10 @@ class OrderDetailsScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 100), // مساحة سفلية لمنع اختفاء المحتوى خلف الأزرار الثابتة
+          const SizedBox(height: 100), 
         ],
       ),
 
-      // الأزرار الثابتة بأسفل الشاشة
       bottomSheet: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -162,7 +156,7 @@ class OrderDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "إلغاء الطلب".tr,
+                    "Cancel Order".tr,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                 ),
@@ -181,7 +175,7 @@ class OrderDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "تسليم الطلب".tr,
+                    "Deliver Order".tr,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                 ),
@@ -193,7 +187,6 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  // بطاقة معلومات العميل الاتصال المباشر
   Widget _buildCustomerCard(Map order, String? phone) {
     return Container(
       width: double.infinity,
@@ -266,7 +259,6 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  // طريقة عرض منتج داخل قائمة الطلب
   Widget _buildOrderItem(Map item) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,14 +312,14 @@ class OrderDetailsScreen extends StatelessWidget {
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text("تأكيد التسليم".tr),
+        title: Text("Confirm Delivery".tr),
         content: Text(
-          "هل أنت متأكد من تسليم الطلب رقم #${order["id"]}؟".tr,
+          "Are you sure you delivered order #${order["id"]}?".tr,
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text("تراجع".tr, style: TextStyle(color: subtitleColor)),
+            child: Text("Back".tr, style: TextStyle(color: subtitleColor)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -335,12 +327,11 @@ class OrderDetailsScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () {
-              Get.back(); // اغلاق الدايالوج
-              // TODO: call controller.deliverOrder(...)
-              Get.back(); // رجوع من شاشة التفاصيل
+              Get.back(); 
+              Get.back(); 
             },
             child: Text(
-              "تأكيد".tr,
+              "Confirm".tr,
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),

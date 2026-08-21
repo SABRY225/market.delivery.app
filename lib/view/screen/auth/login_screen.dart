@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
     Get.put(LoginController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC), // لون خلفية مريح وعصري
+      backgroundColor: const Color(0xFFF8FAFC), 
       body: GetBuilder<LoginController>(
         builder: (controller) => SafeArea(
           child: Center(
@@ -26,7 +26,6 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // شعار التطبيق بتصميم دائري أنيق
                   Center(
                     child: Container(
                       decoration: BoxDecoration(
@@ -47,8 +46,6 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  
-                  // نص الترحيب
                   Text(
                     "welcome_back".tr,
                     textAlign: TextAlign.center,
@@ -60,9 +57,8 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 40),
 
-                  // حقل رقم الهاتف مع كود دولة مصر
                   TextFormField(
-                    controller: controller.phone, // تأكد من تعريف phone في الـ Controller
+                    controller: controller.phone, 
                     keyboardType: TextInputType.phone,
                     style: TextStyle(color: textColor, fontSize: 16), 
                     decoration: InputDecoration(
@@ -98,10 +94,9 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  // حقل كلمة المرور مع ميزة الإخفاء والإظهار
                   TextFormField(
-                    controller: controller.password, // تأكد من تعريف password في الـ Controller
-                    obscureText: controller.isPasswordHidden, // تأكد من تعريف المتغير الفلاني في الـ Controller
+                    controller: controller.password, 
+                    obscureText: controller.isPasswordHidden, 
                     style: TextStyle(color: textColor, fontSize: 16), 
                     decoration: InputDecoration(
                       hintText: "password".tr,
@@ -116,7 +111,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         onPressed: () {
                           controller.isPasswordHidden = !controller.isPasswordHidden;
-                          controller.update(); // لتحديث الواجهة عند الضغط
+                          controller.update(); 
                         },
                       ),
                       filled: true,
@@ -138,7 +133,6 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
 
-                  // زر تسجيل الدخول / مؤشر التحميل
                   SizedBox(
                     height: 56,
                     child: controller.statusRequest == StatusRequest.loading

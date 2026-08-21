@@ -18,7 +18,7 @@ class OrderWeeletModel {
       orderId: json['orderId']?.toString() ?? 'N/A',
       time: json['time']?.toString() ?? '',
       isToday: json['isToday'] ?? false,
-      restaurantName: json['restaurantName'] ?? 'مطعم غير معروف',
+      restaurantName: json['restaurantName'] ?? 'Unknown restaurant',
       totalPaidToRestaurant:
           (json['totalPaidToRestaurant'] as num?)?.toDouble() ?? 0.0,
     );

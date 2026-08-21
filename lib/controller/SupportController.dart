@@ -44,7 +44,6 @@ class SupportController extends GetxController {
 
   final TextEditingController messageInputController = TextEditingController();
 
-  // قم بتمرير userId عند فتح الشاشة
   final currentUserId = LocalStorage.getUserId();
 
   @override
@@ -53,7 +52,6 @@ class SupportController extends GetxController {
     fetchChatHistory();
   }
 
-  // 1. جلب سجل الرسائل
   Future<void> fetchChatHistory() async {
     try {
       isLoading.value = true;
@@ -71,7 +69,6 @@ class SupportController extends GetxController {
         Uri.parse(url),
         headers: headers,
       );
-      
       print('📦 [API RESPONSE] Status: ${response.statusCode}');
       print('Body: ${response.body}');
       print('=============================================');
@@ -84,31 +81,30 @@ class SupportController extends GetxController {
         }
       } else if (response.statusCode == 401 || response.statusCode == 403) {
         LocalStorage.clear();
-        Get.offAllNamed('/login'); // Assuming AppRoutes.login resolves to this
+        Get.offAllNamed('/login'); 
         Get.snackbar(
-          'تنبيه', 
-          'جلسة الدخول منتهية، يرجى إعادة التسجيل',
+          'Alert', 
+          'Session expired, please login again',
           snackPosition: SnackPosition.BOTTOM,
         );
       } else {
-        Get.snackbar('خطأ', 'فشل في جلب سجل المحادثة', snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar('Error', 'Failed to fetch chat log', snackPosition: SnackPosition.BOTTOM);
       }
     } catch (e) {
       print('🔴 [API ERROR] $e');
-      Get.snackbar('خطأ', 'حدث خطأ في الاتصال بالشبكة', snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('Error', 'Network connection error', snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // 2. إرسال رسالة جديدة من العميل
 Future<void> sendMessage() async {
   final text = messageInputController.text.trim();
   if (text.isEmpty) return;
 
   final token = LocalStorage.getToken();
   if (token == null || token.isEmpty) {
-    Get.snackbar('تنبيه', 'جلسة الدخول منتهية، يرجى إعادة التسجيل', snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar('Alert', 'Session expired, please login again', snackPosition: SnackPosition.BOTTOM);
     return;
   }
 
@@ -138,18 +134,18 @@ Future<void> sendMessage() async {
     print('=============================================');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      messageInputController.clear(); // مسح الإدخال فقط عند النجاح
+      messageInputController.clear(); 
       await fetchChatHistory();
     } else if (response.statusCode == 401 || response.statusCode == 403) {
       LocalStorage.clear();
       Get.offAllNamed('/login');
       Get.snackbar(
-        'تنبيه',
-        'جلسة الدخول منتهية، يرجى إعادة التسجيل',
+        'Alert',
+        'Session expired, please login again',
         snackPosition: SnackPosition.BOTTOM,
       );
     } else {
-      String errorMessage = 'تعذر إرسال الرسالة، يرجى المحاولة لاحقاً.';
+      String errorMessage = 'Could not send message, try again.';
       try {
         final decoded = json.decode(response.body);
         if (decoded['message'] != null) {
@@ -158,9 +154,8 @@ Future<void> sendMessage() async {
           errorMessage = decoded['error'];
         }
       } catch (_) {}
-      
       Get.snackbar(
-        'خطأ في الإرسال',
+        'Sending error',
         errorMessage,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.withOpacity(0.1),
@@ -170,8 +165,8 @@ Future<void> sendMessage() async {
   } catch (e) {
     print('🔴 [API ERROR] $e');
     Get.snackbar(
-      'مشكلة في الاتصال',
-      'تأكد من اتصالك بالإنترنت وحاول مجدداً.',
+      'Connection Problem',
+      'Check internet and try again.',
       snackPosition: SnackPosition.BOTTOM,
     );
   } finally {

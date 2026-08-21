@@ -42,21 +42,15 @@ class _OrderCancelSheetState extends State<OrderCancelSheet> {
     if (!_isValid) return;
     setState(() => _isSubmitting = true);
 
-    // TODO: استبدل هذا بالنداء الفعلي:
-    // await Get.find<HomeController>().cancelOrder(
-    //   widget.order["id"].toString(),
-    //   _reasonController.text.trim(),
-    //   _productImage!,
-    // );
 
-    await Future.delayed(const Duration(seconds: 1)); // محاكاة الإرسال
+    await Future.delayed(const Duration(seconds: 1)); 
 
     setState(() => _isSubmitting = false);
 
-    Get.back(); // اغلاق الشيت
-    Get.back(); // رجوع من شاشة التفاصيل
+    Get.back(); 
+    Get.back(); 
     Get.rawSnackbar(
-      message: "تم إلغاء الطلب بنجاح".tr,
+      message: "Order cancelled successfully".tr,
       backgroundColor: Colors.redAccent,
       duration: const Duration(seconds: 2),
     );
@@ -90,7 +84,7 @@ class _OrderCancelSheetState extends State<OrderCancelSheet> {
               ),
             ),
             Text(
-              "إلغاء الطلب #${widget.order["id"]}".tr,
+              "Cancel order #${widget.order["id"]}".tr,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -99,18 +93,17 @@ class _OrderCancelSheetState extends State<OrderCancelSheet> {
             ),
             const SizedBox(height: 4),
             Text(
-              "يرجى كتابة سبب الإلغاء وإرفاق صورة للمنتج".tr,
+              "Write cancellation reason & attach photo".tr,
               style: TextStyle(color: subtitleColor, fontSize: 12),
             ),
             const SizedBox(height: 16),
 
-            // سبب الإلغاء
             TextField(
               controller: _reasonController,
               maxLines: 3,
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
-                hintText: "اكتب سبب الإلغاء هنا...".tr,
+                hintText: "Write cancellation reason here...".tr,
                 hintStyle: TextStyle(color: subtitleColor),
                 filled: true,
                 fillColor: inputColor,
@@ -124,7 +117,6 @@ class _OrderCancelSheetState extends State<OrderCancelSheet> {
 
             const SizedBox(height: 16),
 
-            // تصوير المنتج
             InkWell(
               onTap: _pickImage,
               borderRadius: BorderRadius.circular(16),
@@ -180,7 +172,7 @@ class _OrderCancelSheetState extends State<OrderCancelSheet> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            "التقاط صورة المنتج".tr,
+                            "Capture product image".tr,
                             style: TextStyle(
                               color: subtitleColor,
                               fontSize: 12,
@@ -218,7 +210,7 @@ class _OrderCancelSheetState extends State<OrderCancelSheet> {
                         ),
                       )
                     : Text(
-                        "تأكيد الإلغاء".tr,
+                        "Confirm Cancel".tr,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
               ),

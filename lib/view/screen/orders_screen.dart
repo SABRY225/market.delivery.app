@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../../controller/order/order_controller.dart';
 import '../../../core/class/status_request.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatelessWidget { 
   const OrdersScreen({super.key});
 
   static Color get primaryColor => const Color(0xFFFF5722);
@@ -68,14 +68,13 @@ class OrdersScreen extends StatelessWidget {
     if (order == null) return const SizedBox();
 
     String orderId = order['id']?.toString() ?? "";
-    String customerName = order['customer'] ?? "عميل غير معروف";
+    String customerName = order['customer'] ?? "Unknown customer";
     String total = order['total']?.toString() ?? "0";
-    String status = order['status'] ?? "غير محدد";
+    String status = order['status'] ?? "Not Specified";
     String startTime = order['startTime'] ?? "";
-    String paymentMethod = order['payment'] ?? "كاش";
+    String paymentMethod = order['payment'] ?? "Cash";
     Color bgColor = const Color(0xFF94A3B8);
 
-    // تحديد الحالات والألوان
     if (order['status'] == 'pending') {
       status = "new";
       bgColor = const Color.fromARGB(137, 16, 185, 69);

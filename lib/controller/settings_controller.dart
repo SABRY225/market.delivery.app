@@ -60,8 +60,6 @@ class SettingsController extends GetxController {
     await LocalStorage.setDarkMode(value);
     Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
     update();
-    
-    // الانتظار قليلاً حتى يتم تطبيق الثيم ثم إعادة التحميل للرئيسية لتحديث كل الصفحات
     Future.delayed(const Duration(milliseconds: 300), () {
       Get.offAllNamed(AppRoutes.home);
     });

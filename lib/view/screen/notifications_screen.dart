@@ -22,7 +22,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     _fetchNotifications();
   }
 
-  // 1. جلب التنبيهات من الـ Backend
   Future<void> _fetchNotifications() async {
       final String url =
           '${AppLink.deliveryStatus}/${LocalStorage.getUserId()}/notifications';
@@ -49,7 +48,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       }
     }
 
-    // 2. تحديث حالة التنبيه إلى "مقروء" عند الضغط عليه
     Future<void> _markAsRead(int notificationId, int index) async {
       final String url =
           '${AppLink.deliveryStatus}/${LocalStorage.getUserId()}/notifications/read/$notificationId';
@@ -62,13 +60,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           });
         }
       } catch (e) {
-        print('خطأ في تحديث حالة التنبيه: $e');
+        print('Alert status update error: $e');
       }
     }
 
     @override
     Widget build(BuildContext context) {
-      // لون برتقالي عصري وتدرجات متناسقة تتماشى مع هويتك الأساسية
       const Color primaryColor = Color(0xFFFF5722);
       final isDark = Get.isDarkMode;
       final bgColor = Get.theme.scaffoldBackgroundColor;
@@ -99,7 +96,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(
                   16,
-                ), // انحناء خفيف لأسفل الـ AppBar ليعطيه طابعاً حديثاً
+                ), 
               ),
             ),
           ),
@@ -114,7 +111,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // أيقونة دلالية ممتازة في حال عدم وجود تنبيهات
                       Container(
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
@@ -157,7 +153,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     final item = _notifications[index];
                     final bool isRead = item['read'] ?? false;
 
-                    // معالجة آمنة للتاريخ في حال كان قادماً بشكل غير متوقع
                     String dateStr = item['createdAt']?.toString() ?? '';
                     if (dateStr.length > 10) dateStr = dateStr.substring(0, 10);
 
@@ -183,14 +178,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             if (!isRead) {
                               _markAsRead(item['id'], index);
                             }
-                            // يمكنك توجيه المستخدم لصفحة الطلب هنا
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // أيقونة التنبيه محاطة بحاوية أنيقة تفاعلية
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
@@ -208,7 +201,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                // محتوى التنبيه (العنوان والوصف والتاريخ)
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -234,7 +226,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          // النقطة الصغيرة الدالة على عدم القراءة، تم نقلها بجانب العنوان بشكل أرتب
                                           if (!isRead)
                                             Container(
                                               width: 8,
@@ -255,11 +246,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                               : textColor,
                                           fontSize: 13,
                                           height:
-                                              1.4, // زيادة تباعد الأسطر لراحة العين أثناء القراءة
+                                              1.4, 
                                         ),
                                       ),
                                       const SizedBox(height: 8),
-                                      // قسم التاريخ بتصميم ناعم
                                       Row(
                                         children: [
                                           Icon(
@@ -294,7 +284,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  // تحديد الأيقونة بشكل يتناسب مع طبيعة التطبيقات الحديثة
   IconData _getIconByType(String? type) {
     switch (type) {
       case 'order':

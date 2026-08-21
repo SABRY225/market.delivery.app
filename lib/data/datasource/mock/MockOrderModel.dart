@@ -17,23 +17,23 @@ class MockOrderModel {
     MockOrderModel(
       id: 8432,
       price: 150.00,
-      time: "منذ 5 دقائق",
-      storeName: "ماكدونالدز - فرع وسط البلد",
-      customerAddress: "شارع التحرير، بناء رقم ٢٤، الدور الرابع",
+      time: "5 mins ago",
+      storeName: "McDonalds",
+      customerAddress: "Tahrir St, Bldg 24",
     ),
     MockOrderModel(
       id: 8433,
       price: 75.50,
-      time: "منذ ١٢ دقيقة",
-      storeName: "صيدلية العزبي - فرع الميرغني",
-      customerAddress: "شارع الثورة، بجوار مسجد الصديق",
+      time: "12 mins ago",
+      storeName: "El Ezaby Pharmacy",
+      customerAddress: "Thawra St",
     ),
     MockOrderModel(
       id: 8434,
       price: 320.00,
-      time: "منذ ٢0 دقيقة",
-      storeName: "سوبرماركت خير زمان",
-      customerAddress: "شارع عباس العقاد، برج الياسمين",
+      time: "20 mins ago",
+      storeName: "Kheir Zaman Supermarket",
+      customerAddress: "Abbas El Akkad St",
     ),
   ];
 }

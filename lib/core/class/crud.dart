@@ -51,15 +51,12 @@ class Crud {
     try {
       final headers = _getHeaders();
       final body = jsonEncode(data);
-      
       _logRequest('POST', linkurl, headers, body);
-      
       var response = await http.post(
         Uri.parse(linkurl),
         headers: headers,
         body: body,
       );
-      
       _logResponse(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -83,15 +80,12 @@ class Crud {
     try {
       final headers = _getHeaders();
       final body = jsonEncode({"online": online});
-      
       _logRequest('PUT', linkurl, headers, body);
-      
       var response = await http.put(
         Uri.parse(linkurl),
         headers: headers,
         body: body,
       );
-      
       _logResponse(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -115,15 +109,12 @@ class Crud {
     try {
       final headers = _getHeaders();
       final body = jsonEncode(data);
-      
       _logRequest('PATCH/PUT', linkurl, headers, body);
-      
       var response = await http.put(
         Uri.parse(linkurl),
         headers: headers,
         body: body,
       );
-      
       _logResponse(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -143,14 +134,11 @@ class Crud {
   Future<Either<StatusRequest, Map>> getData(String linkurl) async {
     try {
       final headers = _getHeaders();
-      
       _logRequest('GET', linkurl, headers);
-      
       var response = await http.get(
         Uri.parse(linkurl),
         headers: headers,
       );
-      
       _logResponse(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -170,14 +158,11 @@ class Crud {
   Future<Either<StatusRequest, Map>> deleteData(String linkurl) async {
     try {
       final headers = _getHeaders();
-      
       _logRequest('DELETE', linkurl, headers);
-      
       var response = await http.delete(
         Uri.parse(linkurl),
         headers: headers,
       );
-      
       _logResponse(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
