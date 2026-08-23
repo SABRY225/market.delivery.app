@@ -8,7 +8,7 @@ import '../../data/datasource/remote/home_data.dart';
 class TripDetailsScreen extends StatelessWidget {
   const TripDetailsScreen({super.key});
 
-  static Color get primaryColor => const Color(0xFFFF5722);
+  static Color get primaryColor => const Color(0xFF002AFF);
   static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF0F172A);
   static Color get subtitleColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);
   static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;

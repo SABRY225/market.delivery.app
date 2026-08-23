@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  static Color get primaryColor => const Color(0xFFFF5722);
+  static Color get primaryColor => const Color(0xFF002AFF);
   static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);
 
   static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;

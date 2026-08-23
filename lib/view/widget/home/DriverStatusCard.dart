@@ -11,7 +11,7 @@ class DriverStatusCard extends StatelessWidget {
     required this.onStatusChanged,
   });
 
-  static const Color primaryColor = Color(0xFFFF5722);
+  static const Color primaryColor = Color(0xFF002AFF);
   static const Color textColor = Color(0xFF1E293B);
   static const Color subTextColor = Color(0xFF64748B);
 

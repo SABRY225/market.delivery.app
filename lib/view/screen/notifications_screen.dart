@@ -66,7 +66,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     @override
     Widget build(BuildContext context) {
-      const Color primaryColor = Color(0xFFFF5722);
+      const Color primaryColor = Color(0xFF002AFF);
       final isDark = Get.isDarkMode;
       final bgColor = Get.theme.scaffoldBackgroundColor;
       final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;

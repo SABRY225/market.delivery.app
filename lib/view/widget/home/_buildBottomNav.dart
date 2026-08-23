@@ -8,7 +8,7 @@ Widget buildBottomNav(BuildContext context, int currentTabsIndex) {
   final HomeController homeController = Get.find<HomeController>();
   final OrderController orderController = Get.find<OrderController>();
 
-  const Color activeColor = Color(0xFFFF5722); 
+  const Color activeColor = Color(0xFF002AFF);
   const Color inactiveColor = Color(0xFF94A3B8);  
   const Color darkBlue = Color(0xFF1E293B);
 

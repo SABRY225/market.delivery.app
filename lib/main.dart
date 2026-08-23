@@ -94,11 +94,11 @@ class AtelierApp extends StatelessWidget {
       themeMode: LocalStorage.getDarkMode() ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-        primaryColor: const Color(0xFFFF5722),
+        primaryColor: const Color(0xFF002AFF),
       ),
       darkTheme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF0F172A),
-        primaryColor: const Color(0xFFFF5722),
+        primaryColor: const Color(0xFF002AFF),
       ),
     );
   }

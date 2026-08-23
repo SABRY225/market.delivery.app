@@ -6,7 +6,7 @@ import '../../../core/class/status_request.dart';
 class OrdersScreen extends StatelessWidget { 
   const OrdersScreen({super.key});
 
-  static Color get primaryColor => const Color(0xFFFF5722);
+  static Color get primaryColor => const Color(0xFF002AFF);
   static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);
   static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);
   static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
@@ -115,7 +115,7 @@ class OrdersScreen extends StatelessWidget {
             "alert".tr, 
             "Completed orders cannot be modified or reopened.".tr,
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor:Color(0xFFFF5722)
+            backgroundColor:Color(0xFF002AFF)
           );
         }
       },

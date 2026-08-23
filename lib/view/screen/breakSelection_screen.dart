@@ -72,7 +72,7 @@ class _BreakSelectionScreenState extends State<BreakSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFFF5722);
+    const primaryColor = Color(0xFF002AFF);
     final isDark = Get.isDarkMode;
     final backgroundColor = Get.theme.scaffoldBackgroundColor;
     final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;

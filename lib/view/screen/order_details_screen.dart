@@ -6,7 +6,7 @@ import 'order_cancel_sheet.dart';
 class OrderDetailsScreen extends StatelessWidget {
   const OrderDetailsScreen({super.key});
 
-  static Color get primaryColor => const Color(0xFFFF5722);
+  static Color get primaryColor => const Color(0xFF002AFF);
   static Color get primaryLight => Get.isDarkMode ? const Color(0xFF2D1610) : const Color(0xFFFFF0ED);
   static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF0F172A);
   static Color get subtitleColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);

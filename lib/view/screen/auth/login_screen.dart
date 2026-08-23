@@ -6,7 +6,7 @@ import '../../../core/class/status_request.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-  static const Color primaryColor = Color(0xFFFF5722); 
+  static const Color primaryColor = Color(0xFF002AFF);
   static const Color textColor = Color(0xFF1E293B);   
   static const Color iconColor = Color(0xFF64748B);    
   static const Color fieldColor = Colors.white;        

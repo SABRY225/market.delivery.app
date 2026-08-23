@@ -14,7 +14,7 @@ class ActiveBreakScreen extends StatelessWidget {
     final isDark = Get.isDarkMode;
     final backgroundColor = isDark ? const Color(0xFF0F172A) : Get.theme.scaffoldBackgroundColor;
     final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    const accentColor = Color(0xFFFF5722);
+    const accentColor = Color(0xFF002AFF);
     const warningColor = Color(0xFFF59E0B);
     final textColor = isDark ? Colors.white : Colors.black87;
     final subTextColor = isDark ? Colors.blueGrey[200] : Colors.blueGrey[600];

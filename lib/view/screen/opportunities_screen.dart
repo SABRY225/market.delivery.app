@@ -32,7 +32,7 @@ class OpportunitiesScreen extends StatelessWidget {
       body: GetBuilder<OpportunitiesController>(
         builder: (controller) {
           if (controller.statusRequest == StatusRequest.loading) {
-            return Center(child: CircularProgressIndicator(color: Color(0xFFFF5722)));
+            return Center(child: CircularProgressIndicator(color: Color(0xFF002AFF)));
           } else if (controller.statusRequest == StatusRequest.failure || controller.data.isEmpty) {
             return Center(
               child: Column(
@@ -94,7 +94,7 @@ class OpportunitiesScreen extends StatelessWidget {
             child: Container(
               width: 6,
               decoration: const BoxDecoration(
-                color: Color(0xFFFF5722),
+                color: Color(0xFF002AFF),
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -116,7 +116,7 @@ class OpportunitiesScreen extends StatelessWidget {
                         color: innerIconBg,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(Icons.rocket_launch_rounded, color: Color(0xFFFF5722), size: 26),
+                      child: Icon(Icons.rocket_launch_rounded, color: Color(0xFF002AFF), size: 26),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -214,7 +214,7 @@ class OpportunitiesScreen extends StatelessWidget {
                   height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF5722),
+                      backgroundColor: const Color(0xFF002AFF),
                       elevation: 0,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),

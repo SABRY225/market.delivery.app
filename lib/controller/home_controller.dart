@@ -152,7 +152,7 @@ Future<void> drawRoute() async {
               polylineId: const PolylineId("route"),
               points: routePoints,
               width: 5,
-              color: const Color(0xFFFF5722),
+              color: const Color(0xFF002AFF),
             ),
           );
         update();
@@ -170,7 +170,7 @@ Future<void> drawRoute() async {
         polylineId: const PolylineId("route_fallback"),
         points: [start, end],
         width: 5,
-        color: const Color(0xFFFF5722),
+        color: const Color(0xFF002AFF),
       ),
     );
   update();
@@ -423,7 +423,7 @@ Future<void> drawRoute() async {
 
       Get.rawSnackbar(
         message: "Work mode changed to: $modeName",
-        backgroundColor: const Color(0xFFFF5722),
+        backgroundColor: const Color(0xFF002AFF),
         duration: const Duration(seconds: 2),
       );
 

@@ -12,7 +12,7 @@ class OrderCancelSheet extends StatefulWidget {
 }
 
 class _OrderCancelSheetState extends State<OrderCancelSheet> {
-  static const Color primaryColor = Color(0xFFFF5722);
+  static const Color primaryColor = Color(0xFF002AFF);
   static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF0F172A);
   static Color get subtitleColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);
   static Color get cardColor => Get.isDarkMode ? const Color(0xFF1E293B) : Colors.white;

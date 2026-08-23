@@ -71,7 +71,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFFFF5722),
+              primary: Color(0xFF002AFF),
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
@@ -149,7 +149,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                   decoration: BoxDecoration(
                     color: isPast ? (isDark ? Colors.grey[800] : Colors.grey[100]) : cardColor,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isActive ? const Color(0xFFFF5722).withOpacity(0.4) : (isToday ? Colors.blue.withOpacity(0.3) : (isDark ? Colors.white10 : Colors.transparent))),
+                    border: Border.all(color: isActive ? const Color(0xFF002AFF).withOpacity(0.4) : (isToday ? Colors.blue.withOpacity(0.3) : (isDark ? Colors.white10 : Colors.transparent))),
                     boxShadow: [
                       if (!isPast) BoxShadow(color: shadowColor, blurRadius: 8, offset: const Offset(0, 4))
                     ],
@@ -164,7 +164,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                               width: 45,
                               height: 45,
                               decoration: BoxDecoration(
-                                color: isToday ? Colors.blue.withOpacity(0.1) : (isActive ? const Color(0xFFFF5722).withOpacity(0.1) : (isDark ? Colors.white10 : Colors.grey[100])),
+                                color: isToday ? Colors.blue.withOpacity(0.1) : (isActive ? const Color(0xFF002AFF).withOpacity(0.1) : (isDark ? Colors.white10 : Colors.grey[100])),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Column(
@@ -175,7 +175,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
-                                      color: isToday ? Colors.blue : (isActive ? const Color(0xFFFF5722) : textColor),
+                                      color: isToday ? Colors.blue : (isActive ? const Color(0xFFFFFFFF) : textColor),
                                     ),
                                   ),
                                 ],
@@ -202,7 +202,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                             if (!isPast)
                               Switch(
                                 value: isActive,
-                                activeThumbColor: const Color(0xFFFF5722),
+                                activeThumbColor: const Color(0xFF002AFF),
                                 onChanged: (val) {
                                   setState(() {
                                     monthDays[index]['active'] = val;
@@ -230,7 +230,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                                       children: [
                                         Text("start_time".tr, style: TextStyle(color: Colors.grey, fontSize: 11)),
                                         const SizedBox(height: 4),
-                                        Text(day['start'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFFF5722))),
+                                        Text(day['start'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF002AFF))),
                                       ],
                                     ),
                                   ),
@@ -252,7 +252,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                                       children: [
                                         Text("end_time".tr, style: TextStyle(color: Colors.grey, fontSize: 11)),
                                         const SizedBox(height: 4),
-                                        Text(day['end'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFFF5722))),
+                                        Text(day['end'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF002AFF))),
                                       ],
                                     ),
                                   ),
@@ -281,7 +281,7 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
               height: 54,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF5722),
+                  backgroundColor: const Color(0xFF002AFF),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   elevation: 0,
                 ),

@@ -6,7 +6,7 @@ import '../../routes.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  static Color get primaryColor => const Color(0xFFFF5722); 
+  static Color get primaryColor => const Color(0xFF002AFF);
   static Color get textColor => Get.isDarkMode ? Colors.white : const Color(0xFF1E293B);    
   static Color get iconColor => Get.isDarkMode ? Colors.white70 : const Color(0xFF64748B);    
   static Color get backgroundColor => Get.theme.scaffoldBackgroundColor;
