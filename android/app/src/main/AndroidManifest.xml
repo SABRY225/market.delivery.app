@@ -23,7 +23,7 @@
     </queries>
 
     <application
-        android:label="Delivery"
+        android:label="Halal Rider"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

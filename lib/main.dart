@@ -83,7 +83,7 @@ class AtelierApp extends StatelessWidget {
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Delivery',
+      title: 'Halal Rider',
       translations: MyTranslations(),
       locale: localeController.initialLocale,
 
